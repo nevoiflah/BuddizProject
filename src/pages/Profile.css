@@ -1,0 +1,110 @@
+.profile-page {
+    padding-top: var(--spacing-xl);
+    max-width: 800px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+    background: var(--color-surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+.profile-details h2 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-main);
+}
+
+.profile-details p {
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.badge {
+    background-color: rgba(242, 142, 28, 0.2);
+    color: var(--color-primary);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid var(--color-primary);
+}
+
+.profile-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.profile-card {
+    background: var(--color-surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.profile-card h3 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: var(--spacing-sm);
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-muted);
+}
+
+.stat-value {
+    color: var(--color-text-main);
+    font-weight: 700;
+}
+
+.order-list {
+    list-style: none;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.order-date {
+    color: var(--color-text-muted);
+}
+
+.order-total {
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.order-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.order-status.completed {
+    color: var(--color-accent-light);
+}

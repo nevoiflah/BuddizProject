@@ -1,0 +1,217 @@
+:root {
+  /* New Palette: White, Light Blue, Seafoam Green */
+  --color-primary: #2BAE66;
+  --color-primary-dark: #1E8048;
+  /* Added missing variable */
+  --color-secondary: #E0F7FA;
+  --color-accent: #2BAE66;
+  --color-bg: #FFFFFF;
+  --color-surface: #F5FBFB;
+  --color-text-main: #111827;
+  /* Darker (Gray-900) for better readability */
+  --color-text-muted: #4b5563;
+  /* Darker (Gray-600) for better contrast */
+  --color-border: #94d8d1;
+
+  --font-main: 'Inter',
+    -apple-system,
+    BlinkMacMacSystemFont,
+    sans-serif;
+  --font-display: 'Inter',
+    sans-serif;
+  /* Cleaner display font */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 64px;
+
+  --radius-sm: 12px;
+  /* Soft modern radius */
+  --radius-md: 20px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 20px rgba(242, 142, 28, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.5;
+  padding-bottom: 80px;
+  /* Space for Bottom Nav */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text-main);
+}
+
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-main);
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.btn-primary {
+  background: var(--color-primary-dark);
+  /* Darker green for reliable contrast with white text */
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  /* Bold for readability */
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(43, 174, 102, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(43, 174, 102, 0.3);
+}
+
+.btn-secondary {
+  background: white;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary-dark);
+  /* Darker for contrast */
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-primary-dark);
+  color: var(--color-primary-dark);
+}
+
+.btn-danger {
+  background: #ef4444;
+  /* Red-500 */
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  /* Red-600 */
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+/* Shared Empty State and Utility Styles */
+
+.empty-page-container {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.empty-icon-wrapper {
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.8;
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-6 {
+    margin-bottom: var(--spacing-lg);
+}
+

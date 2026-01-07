@@ -1,0 +1,102 @@
+.catalogue-page {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+    text-align: center;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xl);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.product-card {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+}
+
+.product-image-placeholder {
+    height: 200px;
+    background-color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.product-info {
+    padding: var(--spacing-md);
+}
+
+.product-name {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-main);
+}
+
+.product-style {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.product-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-md);
+    min-height: 40px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.product-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.btn-fav {
+    background: transparent;
+    border: 1px solid var(--color-text-muted);
+    color: var(--color-text-muted);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+.btn-fav:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-fav.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
