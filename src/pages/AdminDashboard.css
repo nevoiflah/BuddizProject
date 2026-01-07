@@ -1,0 +1,146 @@
+.admin-page {
+    padding-top: var(--spacing-xl);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.admin-tabs {
+    display: flex;
+    gap: var(--spacing-sm);
+    background: var(--color-surface);
+    padding: 4px;
+    border-radius: var(--radius-md);
+}
+
+.admin-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.admin-tab:hover {
+    color: var(--color-text-main);
+}
+
+.admin-tab.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.data-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+}
+
+.admin-table th {
+    text-align: left;
+    padding: var(--spacing-md);
+    color: var(--color-text-muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table td {
+    padding: var(--spacing-md);
+    color: var(--color-text-main);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    background: var(--color-primary-dark);
+    color: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.badge-admin {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.badge-user {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-dot.success {
+    background-color: #2ecc71;
+}
+
+.status-dot.warning {
+    background-color: #f1c40f;
+}
+
+.status-dot.danger {
+    background-color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .admin-tab {
+        flex: 1;
+        justify-content: center;
+    }
+}

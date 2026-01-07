@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Beer, ShoppingCart, Heart, User } from 'lucide-react';
+import { Home, Beer, ShoppingCart, Heart, User, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import './BottomNav.css';
 
 const BottomNav = () => {
-    const { cart } = useApp();
+    const { cart, user } = useApp();
 
     return (
         <nav className="bottom-nav">
@@ -36,6 +36,12 @@ const BottomNav = () => {
                 <User size={24} />
                 <span>Profile</span>
             </NavLink>
+            {user?.role === 'ADMIN' && (
+                <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                    <Shield size={24} />
+                    <span>Admin</span>
+                </NavLink>
+            )}
         </nav >
     );
 };

@@ -3,8 +3,11 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    background: var(--color-surface);
-    backdrop-filter: blur(20px);
+    width: 100%;
+    background: #ffffff;
+    /* Solid dark color to prevent transparency issues */
+    backdrop-filter: none;
+    /* Removed blur to ensure consistency */
     border-top: 1px solid var(--color-border);
     display: flex;
     justify-content: space-around;

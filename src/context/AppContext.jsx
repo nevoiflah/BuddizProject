@@ -93,10 +93,13 @@ export const AppProvider = ({ children }) => {
                 ...dbUser // Spread DB attributes (loyaltyPoints, role, etc.)
             });
         } catch (err) {
-            console.error("Error in checkUser:", err);
+            // Silence expected error when user is not logged in
+            if (err.name === 'UserUnAuthenticatedException' || err.message === 'The user is not authenticated') {
+                console.log("User is not signed in.");
+            } else {
+                console.error("Error in checkUser:", err);
+            }
             setUser(null);
-            // Don't clear favorites here, keep local cache if auth fails briefly? 
-            // Or maybe good to clear. Let's start with empty if no user.
             // setFavorites([]); 
         }
         setLoading(false);

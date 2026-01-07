@@ -22,7 +22,6 @@ exports.handler = async (event, context) => {
                 username: username,
                 name: name,
                 role: 'USER',
-                loyaltyPoints: 0,
                 createdAt: new Date().toISOString()
             };
 
