@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signIn } from 'aws-amplify/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Auth.css';
 
 const Login = () => {
@@ -9,7 +10,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { setUser, user } = useApp();
+    const { setUser, user, t } = useApp();
 
     useEffect(() => {
         if (user) {
@@ -40,39 +41,42 @@ const Login = () => {
         <div className="auth-page">
             <div className="auth-container animate-fade-in">
                 <div className="auth-card">
-                    <h2>Welcome Back</h2>
-                    <p className="auth-subtitle">Login to your Buddiz account</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2>{t('welcomeBack')}</h2>
+                        <LanguageSwitcher />
+                    </div>
+                    <p className="auth-subtitle">{t('loginSubtitle')}</p>
 
                     {error && <div className="auth-error">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-group">
-                            <label>Email Address</label>
+                            <label>{t('emailLabel')}</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                placeholder="name@example.com"
+                                placeholder={t('emailPlaceholder')}
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Password</label>
+                            <label>{t('passwordLabel')}</label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                placeholder="••••••••"
+                                placeholder={t('passwordPlaceholder')}
                             />
                         </div>
 
-                        <button type="submit" className="btn-primary btn-full">Login</button>
+                        <button type="submit" className="btn-primary btn-full">{t('loginBtn')}</button>
                     </form>
 
                     <div className="auth-footer">
-                        <p>Don't have an account? <Link to="/register">Sign up</Link></p>
+                        <p>{t('dontHaveAccount')} <Link to="/register">{t('signUpBtn')}</Link></p>
                     </div>
                 </div>
             </div>

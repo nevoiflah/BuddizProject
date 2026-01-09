@@ -5,7 +5,7 @@ import logo from '../assets/BuddizLogo.jpeg';
 import './Home.css';
 
 const Home = () => {
-    const { user } = useApp();
+    const { user, t } = useApp();
 
     return (
         <div className="home-page animate-fade-in">
@@ -14,18 +14,18 @@ const Home = () => {
                     <div className="hero-logo-wrapper animate-float">
                         <img src={logo} alt="Buddiz Beer" className="hero-logo" />
                     </div>
-                    <h1 className="hero-title">Buddiz</h1>
-                    <h2 className="hero-subtitle">Let The Dog Out.</h2>
+                    <h1 className="hero-title">{t('heroTitle')}</h1>
+                    <h2 className="hero-subtitle">{t('heroSubtitle')}</h2>
                     <p className="hero-description">
-                        Premium craft brewed for the best moments with your best friends.
+                        {t('heroDescription')}
                     </p>
                     <div className="hero-actions">
                         {user ? (
-                            <Link to="/catalogue" className="btn-primary">View Catalogue</Link>
+                            <Link to="/catalogue" className="btn-primary">{t('viewCatalogue')}</Link>
                         ) : (
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <Link to="/login" className="btn-primary">Login</Link>
-                                <Link to="/register" className="btn-secondary">Register</Link>
+                                <Link to="/login" className="btn-primary">{t('loginBtn')}</Link>
+                                <Link to="/register" className="btn-secondary">{t('signUpBtn')}</Link>
                             </div>
                         )}
                     </div>
@@ -33,14 +33,10 @@ const Home = () => {
             </section>
 
             <section id="story" className="story-section container">
-                <h3 className="section-title">Where it all began</h3>
+                <h3 className="section-title">{t('storyTitle')}</h3>
                 <div className="story-content">
-                    <p>
-                        It started with a simple idea: good beer and good dogs. Buddiz was born from a passion for craft brewing and the joy of seeing our furry friends run free.
-                    </p>
-                    <p>
-                        Every bottle is crafted with the same loyalty and energy that our dogs bring to our lives. Let the dog out, cracked open a cold one, and enjoy the moment.
-                    </p>
+                    <p>{t('storyText1')}</p>
+                    <p>{t('storyText2')}</p>
                 </div>
             </section>
         </div>

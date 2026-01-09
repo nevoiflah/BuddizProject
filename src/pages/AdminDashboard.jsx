@@ -8,7 +8,7 @@ import { Users, Package, ShoppingBag, Activity, Trash2, Shield, ShieldOff } from
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-    const { user } = useApp();
+    const { user, t } = useApp();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('users');
     const [users, setUsers] = useState([]);
@@ -52,24 +52,32 @@ const AdminDashboard = () => {
         setLoading(false);
     };
 
-    const handleDeleteUser = async (userId) => {
-        if (!window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) return;
+    const handleDeleteUser = async (userToDelete) => {
+        if (!window.confirm(`Are you sure you want to delete ${userToDelete.name}? This action cannot be undone.`)) return;
 
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
+            // Call the Admin Delete Lambda
+            const response = await fetch('https://nmmrf3d34rrguhcxcbqcxdtd640ouger.lambda-url.eu-north-1.on.aws/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: userToDelete.email,
+                    userId: userToDelete.id
+                })
+            });
 
-            await docClient.send(new DeleteCommand({
-                TableName: "BUDDIZ-Users",
-                Key: { id: userId }
-            }));
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || 'Failed to delete user');
+            }
 
-            setUsers(users.filter(u => u.id !== userId));
-            alert("User deleted successfully.");
+            setUsers(users.filter(u => u.id !== userToDelete.id));
+            alert("User deleted successfully from System (Auth & Data).");
         } catch (error) {
             console.error("Error deleting user:", error);
-            alert("Failed to delete user.");
+            alert(`Failed to delete user: ${error.message}`);
         }
     };
 
@@ -111,33 +119,33 @@ const AdminDashboard = () => {
         <div className="admin-page container animate-fade-in">
             <header className="admin-header">
                 <div>
-                    <h1>Admin Dashboard</h1>
-                    <p>Overview of system activity</p>
+                    <h1>{t('adminDashboard')}</h1>
+                    <p>{t('adminOverview')}</p>
                 </div>
                 <div className="admin-tabs">
-                    <TabButton id="users" icon={Users} label="Users" />
-                    <TabButton id="stock" icon={Package} label="Stock" />
-                    <TabButton id="orders" icon={ShoppingBag} label="Orders" />
+                    <TabButton id="users" icon={Users} label={t('tabUsers')} />
+                    <TabButton id="stock" icon={Package} label={t('tabStock')} />
+                    <TabButton id="orders" icon={ShoppingBag} label={t('tabOrders')} />
                 </div>
             </header>
 
             <div className="admin-content">
                 {loading ? (
-                    <div className="loading-state">Loading data...</div>
+                    <div className="loading-state">{t('loadingData')}</div>
                 ) : (
                     <>
                         {activeTab === 'users' && (
                             <div className="data-card">
-                                <h3>Registered Users ({users.length})</h3>
+                                <h3>{t('registeredUsers')} ({users.length})</h3>
                                 <div className="table-responsive">
                                     <table className="admin-table">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Role</th>
-                                                <th>Joined</th>
-                                                <th>Actions</th>
+                                                <th>{t('colName')}</th>
+                                                <th>{t('colEmail')}</th>
+                                                <th>{t('colRole')}</th>
+                                                <th>{t('colJoined')}</th>
+                                                <th>{t('colActions')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -152,7 +160,7 @@ const AdminDashboard = () => {
                                                     <td>{u.email}</td>
                                                     <td>
                                                         <span className={`badge ${u.role === 'ADMIN' ? 'badge-admin' : 'badge-user'}`}>
-                                                            {u.role || 'USER'}
+                                                            {u.role === 'ADMIN' ? t('adminBadge') : t('userBadge')}
                                                         </span>
                                                     </td>
                                                     <td>{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}</td>
@@ -169,7 +177,7 @@ const AdminDashboard = () => {
                                                             <button
                                                                 className="btn-icon"
                                                                 title="Delete User"
-                                                                onClick={() => handleDeleteUser(u.id)}
+                                                                onClick={() => handleDeleteUser(u)}
                                                                 style={{ color: '#e74c3c' }}
                                                             >
                                                                 <Trash2 size={18} />
@@ -186,16 +194,16 @@ const AdminDashboard = () => {
 
                         {activeTab === 'stock' && (
                             <div className="data-card">
-                                <h3>Product Inventory ({products.length})</h3>
+                                <h3>{t('productInventory')} ({products.length})</h3>
                                 <div className="table-responsive">
                                     <table className="admin-table">
                                         <thead>
                                             <tr>
-                                                <th>Product</th>
-                                                <th>Category</th>
-                                                <th>Price</th>
-                                                <th>Stock Level</th>
-                                                <th>Status</th>
+                                                <th>{t('colProduct')}</th>
+                                                <th>{t('colCategory')}</th>
+                                                <th>{t('colPrice')}</th>
+                                                <th>{t('colStock')}</th>
+                                                <th>{t('colStatus')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -207,7 +215,7 @@ const AdminDashboard = () => {
                                                     <td>{p.stock}</td>
                                                     <td>
                                                         <span className={`status-dot ${p.stock > 10 ? 'success' : p.stock > 0 ? 'warning' : 'danger'}`}></span>
-                                                        {p.stock > 10 ? 'In Stock' : p.stock > 0 ? 'Low Stock' : 'Out of Stock'}
+                                                        {p.stock > 10 ? t('inStock') : p.stock > 0 ? t('lowStock') : t('outOfStock')}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -219,17 +227,17 @@ const AdminDashboard = () => {
 
                         {activeTab === 'orders' && (
                             <div className="data-card">
-                                <h3>Recent Orders ({orders.length})</h3>
+                                <h3>{t('recentOrders')} ({orders.length})</h3>
                                 {orders.length === 0 ? (
-                                    <div className="empty-state">No orders found.</div>
+                                    <div className="empty-state">{t('noOrdersFound')}</div>
                                 ) : (
                                     <table className="admin-table">
                                         <thead>
                                             <tr>
-                                                <th>Order ID</th>
-                                                <th>Customer</th>
-                                                <th>Total</th>
-                                                <th>Date</th>
+                                                <th>{t('colOrderId')}</th>
+                                                <th>{t('colCustomer')}</th>
+                                                <th>{t('colTotal')}</th>
+                                                <th>{t('colDate')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

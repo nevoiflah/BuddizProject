@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, QueryCommand, PutCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { getCurrentUser, fetchUserAttributes, fetchAuthSession } from 'aws-amplify/auth';
+import { translations } from '../constants/translations';
 
 const AppContext = createContext();
 
@@ -19,6 +20,7 @@ export const AppProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [language, setLanguage] = useState(() => localStorage.getItem('buddiz_language') || 'en');
 
     useEffect(() => {
         localStorage.setItem('buddiz_cart', JSON.stringify(cart));
@@ -31,6 +33,16 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
         checkUser();
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('buddiz_language', language);
+        document.dir = language === 'he' ? 'rtl' : 'ltr';
+        document.documentElement.lang = language;
+    }, [language]);
+
+    const t = (key) => {
+        return translations[language][key] || key;
+    };
 
     async function checkUser() {
         try {
@@ -121,6 +133,10 @@ export const AppProvider = ({ children }) => {
         setCart(prev => prev.filter(item => item.id !== productId));
     };
 
+    const clearCart = () => {
+        setCart([]);
+    };
+
     const toggleFavorite = async (product) => {
         console.log("toggleFavorite called for:", product.id);
         console.log("Current User State:", user);
@@ -203,9 +219,13 @@ export const AppProvider = ({ children }) => {
             setUser,
             addToCart,
             removeFromCart,
+            clearCart,
             removeFromFavorites,
             toggleFavorite,
-            loading
+            loading,
+            language,
+            setLanguage,
+            t
         }}>
             {children}
         </AppContext.Provider>

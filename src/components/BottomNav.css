@@ -3,7 +3,6 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    width: 100%;
     background: #ffffff;
     /* Solid dark color to prevent transparency issues */
     backdrop-filter: none;
@@ -11,10 +10,10 @@
     border-top: 1px solid var(--color-border);
     display: flex;
     justify-content: space-around;
-    padding: 12px 0 24px 0;
+    padding: 12px 0 calc(12px + env(safe-area-inset-bottom)) 0;
     /* Extra padding for safe area */
     z-index: 1000;
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item {

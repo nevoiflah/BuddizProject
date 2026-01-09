@@ -5,17 +5,17 @@ import { useApp } from '../context/AppContext';
 import './BottomNav.css';
 
 const BottomNav = () => {
-    const { cart, user } = useApp();
+    const { cart, user, t } = useApp();
 
     return (
         <nav className="bottom-nav">
             <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <Home size={24} />
-                <span>Home</span>
+                <span>{t('navHome')}</span>
             </NavLink>
             <NavLink to="/catalogue" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <Beer size={24} />
-                <span>Brews</span>
+                <span>{t('navBrews')}</span>
             </NavLink>
             <NavLink to="/cart" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <div className="icon-container">
@@ -26,20 +26,20 @@ const BottomNav = () => {
                         </span>
                     }
                 </div>
-                <span>Cart</span>
+                <span>{t('navCart')}</span>
             </NavLink>
             <NavLink to="/favorites" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <Heart size={24} />
-                <span>Favs</span>
+                <span>{t('navFavorites')}</span>
             </NavLink>
             <NavLink to="/profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <User size={24} />
-                <span>Profile</span>
+                <span>{t('navProfile')}</span>
             </NavLink>
             {user?.role === 'ADMIN' && (
                 <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                     <Shield size={24} />
-                    <span>Admin</span>
+                    <span>{t('navAdmin')}</span>
                 </NavLink>
             )}
         </nav >

@@ -6,8 +6,10 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { fetchAuthSession } from 'aws-amplify/auth';
 
+import productImg from '../assets/BuddizProduct.png';
+
 const Catalogue = () => {
-    const { addToCart, toggleFavorite, favorites } = useApp();
+    const { addToCart, toggleFavorite, favorites, t, language } = useApp();
     const [beers, setBeers] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -38,32 +40,39 @@ const Catalogue = () => {
             setLoading(false);
         }
     };
-    // Removed duplicate useApp call
 
     const isFav = (id) => favorites.some(item => item.id === id);
 
-    if (loading) return <div className="loader">Loading Brews...</div>;
+    // Helper to get translated product fields
+    const getProductVal = (product, field) => {
+        if (language === 'he') {
+            return product[`${field}_he`] || product[field];
+        }
+        return product[field];
+    };
+
+    if (loading) return <div className="loader">{t('loadingBrews')}</div>;
 
     return (
         <div className="catalogue-page container animate-fade-in">
-            <h2 className="page-title">Our Brews</h2>
+            <h2 className="page-title">{t('ourBrews')}</h2>
             <div className="product-grid">
                 {beers.map(beer => (
                     <div key={beer.id} className="product-card">
                         <div className="product-image-placeholder">
-                            <Beer size={40} color="var(--color-primary)" />
+                            <img src={productImg} alt={beer.name} className="product-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                         <div className="product-info">
-                            <h3 className="product-name">{beer.name}</h3>
-                            <p className="product-style">{beer.style} • {beer.abv}</p>
-                            <p className="product-desc">{beer.description}</p>
+                            <h3 className="product-name">{getProductVal(beer, 'name')}</h3>
+                            <p className="product-style">{getProductVal(beer, 'style')} • {beer.abv}</p>
+                            <p className="product-desc">{getProductVal(beer, 'description')}</p>
                             <div className="product-price">${beer.price.toFixed(2)}</div>
                             <div className="product-actions">
                                 <button
                                     className="btn-primary"
                                     onClick={() => addToCart(beer)}
                                 >
-                                    <ShoppingCart size={18} style={{ marginRight: '8px' }} /> Add to Cart
+                                    <ShoppingCart size={18} style={{ marginRight: '8px' }} /> {t('addToCart')}
                                 </button>
                                 <button
                                     className={`btn-icon ${isFav(beer.id) ? 'active' : ''}`}

@@ -4,10 +4,11 @@ import { useApp } from '../context/AppContext';
 import { LogOut, Save, Lock, User, Edit2 } from 'lucide-react';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Profile.css';
 
 const Profile = () => {
-    const { user, setUser } = useApp();
+    const { user, setUser, t } = useApp();
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -67,7 +68,7 @@ const Profile = () => {
         setPasswordMessage('');
         try {
             await updatePassword({ oldPassword, newPassword });
-            setPasswordMessage('Password changed successfully!');
+            setPasswordMessage(t('passwordChangedSuccess') || 'Password changed successfully!');
             setOldPassword('');
             setNewPassword('');
         } catch (error) {
@@ -89,18 +90,25 @@ const Profile = () => {
                 <div className="profile-details">
                     <h2>{user.name}</h2>
                     <p>{user.email}</p>
-                    <span className="profile-badge">Buddiz Member</span>
+                    <span className="profile-badge">
+                        {user.role === 'ADMIN' ? t('adminBadge') : t('userBadge')}
+                    </span>
                 </div>
-                <button onClick={handleLogout} className="btn-danger logout-btn">
-                    Logout <LogOut size={18} style={{ marginLeft: '8px' }} />
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
+                    <div className="desktop-lang-switch">
+                        <LanguageSwitcher />
+                    </div>
+                    <button onClick={handleLogout} className="btn-danger logout-btn">
+                        {t('logout')} <LogOut size={18} style={{ marginLeft: '8px' }} />
+                    </button>
+                </div>
             </div>
 
             <div className="profile-sections">
                 {/* Edit Profile Card */}
                 <div className="profile-card">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h3>Profile Details</h3>
+                        <h3>{t('profileTitle')}</h3>
                         <button
                             className="btn-icon"
                             onClick={() => setIsEditing(!isEditing)}
@@ -113,22 +121,22 @@ const Profile = () => {
                     {!isEditing ? (
                         <div className="profile-info-view">
                             <div className="info-row">
-                                <span className="label">Name</span>
+                                <span className="label text-muted">{t('fullNameLabel')}</span>
                                 <span className="value">{user.name}</span>
                             </div>
                             <div className="info-row">
-                                <span className="label">Username</span>
+                                <span className="label text-muted">Username</span>
                                 <span className="value">{user.username || 'N/A'}</span>
                             </div>
                             <div className="info-row">
-                                <span className="label">Role</span>
+                                <span className="label text-muted">Role</span>
                                 <span className="value">{user.role}</span>
                             </div>
                         </div>
                     ) : (
                         <form onSubmit={handleUpdateProfile} className="profile-form">
                             <div className="form-group">
-                                <label>Name</label>
+                                <label>{t('fullNameLabel')}</label>
                                 <input
                                     type="text"
                                     value={name}
@@ -148,10 +156,10 @@ const Profile = () => {
                             <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
                                 <button type="submit" className="btn-primary" disabled={loading}>
                                     <Save size={16} style={{ marginRight: '8px' }} />
-                                    Save
+                                    {t('saveChanges')}
                                 </button>
                                 <button type="button" className="btn-secondary" onClick={() => setIsEditing(false)}>
-                                    Cancel
+                                    {t('cancel')}
                                 </button>
                             </div>
                         </form>
@@ -160,10 +168,10 @@ const Profile = () => {
 
                 {/* Change Password Card */}
                 <div className="profile-card">
-                    <h3>Change Password</h3>
+                    <h3>{t('changePassword')}</h3>
                     <form onSubmit={handleUpdatePassword} className="profile-form">
                         <div className="form-group">
-                            <label>Current Password</label>
+                            <label>{t('currentPassword')}</label>
                             <div className="input-icon-wrapper">
                                 <Lock size={16} className="input-icon" />
                                 <input
@@ -171,12 +179,12 @@ const Profile = () => {
                                     value={oldPassword}
                                     onChange={(e) => setOldPassword(e.target.value)}
                                     required
-                                    placeholder="••••••••"
+                                    placeholder={t('passwordPlaceholder')}
                                 />
                             </div>
                         </div>
                         <div className="form-group">
-                            <label>New Password</label>
+                            <label>{t('newPassword')}</label>
                             <div className="input-icon-wrapper">
                                 <Lock size={16} className="input-icon" />
                                 <input
@@ -184,7 +192,7 @@ const Profile = () => {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     required
-                                    placeholder="••••••••"
+                                    placeholder={t('passwordPlaceholder')}
                                 />
                             </div>
                         </div>
@@ -194,7 +202,7 @@ const Profile = () => {
                             </div>
                         )}
                         <button type="submit" className="btn-primary btn-full" disabled={loading} style={{ marginTop: '1rem' }}>
-                            Update Password
+                            {t('updatePassword')}
                         </button>
                     </form>
                 </div>

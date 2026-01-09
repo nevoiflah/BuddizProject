@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { signUp } from 'aws-amplify/auth';
 import { useNavigate, Link } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Auth.css';
 
 const Register = () => {
@@ -9,6 +11,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { t } = useApp();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,7 +50,11 @@ const Register = () => {
             navigate(`/confirm?email=${encodeURIComponent(email)}`);
         } catch (err) {
             console.error("Registration Error:", err);
-            setError(err.message);
+            if (err.name === 'UsernameExistsException' || err.message.includes('already exists')) {
+                setError(t('userAlreadyExists'));
+            } else {
+                setError(err.message);
+            }
         }
     };
 
@@ -55,50 +62,53 @@ const Register = () => {
         <div className="auth-page">
             <div className="auth-container animate-fade-in">
                 <div className="auth-card">
-                    <h2>Join Buddiz</h2>
-                    <p className="auth-subtitle">Create your account today</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2>{t('joinBuddiz')}</h2>
+                        <LanguageSwitcher />
+                    </div>
+                    <p className="auth-subtitle">{t('createAccount')}</p>
 
                     {error && <div className="auth-error">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-group">
-                            <label>Full Name</label>
+                            <label>{t('fullNameLabel')}</label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                placeholder="John Doe"
+                                placeholder={t('fullNamePlaceholder')}
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Email Address</label>
+                            <label>{t('emailLabel')}</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                placeholder="name@example.com"
+                                placeholder={t('emailPlaceholder')}
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Password</label>
+                            <label>{t('passwordLabel')}</label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                placeholder="••••••••"
+                                placeholder={t('passwordPlaceholder')}
                             />
                         </div>
 
-                        <button type="submit" className="btn-primary btn-full">Sign Up</button>
+                        <button type="submit" className="btn-primary btn-full">{t('signUpBtn')}</button>
                     </form>
 
                     <div className="auth-footer">
-                        <p>Already have an account? <Link to="/login">Login</Link></p>
+                        <p>{t('alreadyHaveAccount')} <Link to="/login">{t('loginBtn')}</Link></p>
                     </div>
                 </div>
             </div>
