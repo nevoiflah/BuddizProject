@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { fetchAuthSession } from 'aws-amplify/auth';
 import './Cart.css';
 
@@ -35,6 +35,28 @@ const Cart = () => {
             const client = new DynamoDBClient({ region: "eu-north-1", credentials });
             const docClient = DynamoDBDocumentClient.from(client);
 
+            // 1. Deduct Stock for each item
+            // We do this sequentially to ensure we can catch errors per item
+            for (const item of cart) {
+                try {
+                    await docClient.send(new UpdateCommand({
+                        TableName: "BUDDIZ-Beers",
+                        Key: { id: item.id },
+                        UpdateExpression: "set stock = stock - :qty",
+                        ConditionExpression: "stock >= :qty",
+                        ExpressionAttributeValues: {
+                            ":qty": item.quantity
+                        }
+                    }));
+                } catch (err) {
+                    if (err.name === 'ConditionalCheckFailedException') {
+                        throw new Error(`Not enough stock for ${item.name}`);
+                    }
+                    throw err;
+                }
+            }
+
+            // 2. Create Order
             const orderId = crypto.randomUUID();
             const orderTotal = (total + 5).toFixed(2);
 
@@ -54,11 +76,11 @@ const Cart = () => {
 
             clearCart();
             alert("Order placed successfully! 🍺");
-            navigate('/profile'); // Redirect to profile to hopefully see order history
+            navigate('/profile');
 
         } catch (error) {
             console.error("Checkout failed:", error);
-            alert("Failed to place order. Please try again.");
+            alert(`Failed to place order: ${error.message}`);
         }
         setIsCheckingOut(false);
     };
