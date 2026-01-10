@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import './Cart.css';
 
 const Cart = () => {
@@ -20,67 +18,57 @@ const Cart = () => {
         return product[field];
     };
 
-    const handleCheckout = async () => {
+    const LAMBDA_URL = "https://fwc6aqskmvbrivaopjad6cdvru0tikmh.lambda-url.eu-north-1.on.aws/";
+
+    const createOrder = async (data, actions) => {
         if (!user) {
             alert("Please login to complete your purchase!");
             navigate('/login');
             return;
         }
+        try {
+            const response = await fetch(LAMBDA_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "createOrder",
+                    cart: cart
+                })
+            });
+            const order = await response.json();
+            return order.id;
+        } catch (err) {
+            console.error("Create Order Error:", err);
+            throw err;
+        }
+    };
 
-        if (cart.length === 0) return;
-
+    const onApprove = async (data, actions) => {
         setIsCheckingOut(true);
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
+            const response = await fetch(LAMBDA_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "captureOrder",
+                    orderID: data.orderID,
+                    userEmail: user.email || user.username,
+                    cart: cart
+                })
+            });
+            const result = await response.json();
 
-            // 1. Deduct Stock for each item
-            // We do this sequentially to ensure we can catch errors per item
-            for (const item of cart) {
-                try {
-                    await docClient.send(new UpdateCommand({
-                        TableName: "BUDDIZ-Beers",
-                        Key: { id: item.id },
-                        UpdateExpression: "set stock = stock - :qty",
-                        ConditionExpression: "stock >= :qty",
-                        ExpressionAttributeValues: {
-                            ":qty": item.quantity
-                        }
-                    }));
-                } catch (err) {
-                    if (err.name === 'ConditionalCheckFailedException') {
-                        throw new Error(`Not enough stock for ${item.name}`);
-                    }
-                    throw err;
-                }
+            if (result.status === "success") {
+                clearCart();
+                alert(t?.paymentSuccess || "Payment Successful! 🍺");
+                navigate('/profile');
+            } else {
+                console.error("Capture failed:", result);
+                alert("Payment failed. Please try again.");
             }
-
-            // 2. Create Order
-            const orderId = crypto.randomUUID();
-            const orderTotal = (total + 5).toFixed(2);
-
-            const newOrder = {
-                orderId: orderId,
-                userId: user.email || user.username, // Using email as consistent ID
-                items: cart,
-                total: orderTotal,
-                status: 'Processing',
-                createdAt: new Date().toISOString()
-            };
-
-            await docClient.send(new PutCommand({
-                TableName: "BUDDIZ-Orders",
-                Item: newOrder
-            }));
-
-            clearCart();
-            alert("Order placed successfully! 🍺");
-            navigate('/profile');
-
-        } catch (error) {
-            console.error("Checkout failed:", error);
-            alert(`Failed to place order: ${error.message}`);
+        } catch (err) {
+            console.error("Capture Error:", err);
+            alert("An error occurred during payment.");
         }
         setIsCheckingOut(false);
     };
@@ -131,13 +119,25 @@ const Cart = () => {
                         <span>{t('total')}</span>
                         <span>${(total + 5).toFixed(2)}</span>
                     </div>
-                    <button
-                        className="btn-primary btn-checkout"
-                        onClick={handleCheckout}
-                        disabled={isCheckingOut}
-                    >
-                        {isCheckingOut ? t('processing') : t('checkout')}
-                    </button>
+
+                    <div style={{ marginTop: '20px', position: 'relative', zIndex: 1 }}>
+                        <PayPalScriptProvider
+                            key={language}
+                            options={{
+                                "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
+                                currency: "ILS",
+                                locale: language === 'he' ? 'he_IL' : 'en_US'
+                            }}
+                        >
+                            <PayPalButtons
+                                createOrder={createOrder}
+                                onApprove={onApprove}
+                                style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay" }}
+                                disabled={isCheckingOut || !user}
+                            />
+                        </PayPalScriptProvider>
+                        {!user && <p className="text-muted" style={{ fontSize: '0.8rem', textAlign: 'center', marginTop: '10px' }}>Please login to pay</p>}
+                    </div>
                 </div>
             </div>
         </div>

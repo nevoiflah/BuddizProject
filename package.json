@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.964.0",
     "@aws-sdk/lib-dynamodb": "^3.964.0",
+    "@paypal/react-paypal-js": "^8.9.2",
     "aws-amplify": "^6.15.9",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
