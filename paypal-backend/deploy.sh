@@ -67,7 +67,11 @@ echo "Configuring Function URL..."
 aws lambda create-function-url-config \
     --function-name $FUNCTION_NAME \
     --auth-type NONE \
-    --cors '{"AllowOrigins": ["*"], "AllowMethods": ["POST"], "AllowHeaders": ["Content-Type"]}' || true
+    --cors '{"AllowOrigins": ["*"], "AllowMethods": ["*"], "AllowHeaders": ["Content-Type"]}' 2>/dev/null || \
+aws lambda update-function-url-config \
+    --function-name $FUNCTION_NAME \
+    --auth-type NONE \
+    --cors '{"AllowOrigins": ["*"], "AllowMethods": ["*"], "AllowHeaders": ["Content-Type"]}'
 
 # 6. Public Permission (Critical for Function URL)
 echo "Adding permission for public access..."

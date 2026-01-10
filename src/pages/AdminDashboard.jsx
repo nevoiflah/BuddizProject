@@ -211,7 +211,7 @@ const AdminDashboard = () => {
                                                 <tr key={p.id}>
                                                     <td>{p.name}</td>
                                                     <td>{p.category}</td>
-                                                    <td>${p.price}</td>
+                                                    <td>₪{p.price}</td>
                                                     <td>{p.stock}</td>
                                                     <td>
                                                         <span className={`status-dot ${p.stock > 10 ? 'success' : p.stock > 0 ? 'warning' : 'danger'}`}></span>
@@ -245,7 +245,7 @@ const AdminDashboard = () => {
                                                 <tr key={o.orderId}>
                                                     <td>{o.orderId.substring(0, 8)}...</td>
                                                     <td>{o.userId}</td>
-                                                    <td>${o.total}</td>
+                                                    <td>₪{o.total}</td>
                                                     <td>{new Date(o.createdAt).toLocaleDateString()}</td>
                                                 </tr>
                                             ))}

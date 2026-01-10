@@ -66,7 +66,7 @@ const Catalogue = () => {
                             <h3 className="product-name">{getProductVal(beer, 'name')}</h3>
                             <p className="product-style">{getProductVal(beer, 'style')} • {beer.abv}</p>
                             <p className="product-desc">{getProductVal(beer, 'description')}</p>
-                            <div className="product-price">${beer.price.toFixed(2)}</div>
+                            <div className="product-price">₪{beer.price.toFixed(2)}</div>
                             <div className="product-actions">
                                 <button
                                     className="btn-primary"

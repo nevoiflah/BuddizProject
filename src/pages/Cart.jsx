@@ -18,7 +18,7 @@ const Cart = () => {
         return product[field];
     };
 
-    const LAMBDA_URL = "https://fwc6aqskmvbrivaopjad6cdvru0tikmh.lambda-url.eu-north-1.on.aws/";
+    const LAMBDA_URL = "https://xelq5cmvtj.execute-api.eu-north-1.amazonaws.com/";
 
     const createOrder = async (data, actions) => {
         if (!user) {
@@ -95,7 +95,7 @@ const Cart = () => {
                                 <p>{t('qty')}: {item.quantity}</p>
                             </div>
                             <div className="cart-item-price">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                ₪{(item.price * item.quantity).toFixed(2)}
                             </div>
                             <button
                                 className="btn-remove"
@@ -109,15 +109,15 @@ const Cart = () => {
                 <div className="cart-summary">
                     <div className="summary-row">
                         <span>{t('subtotal')}</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>₪{total.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
                         <span>{t('shipping')}</span>
-                        <span>$5.00</span>
+                        <span>₪5.00</span>
                     </div>
                     <div className="summary-row total">
                         <span>{t('total')}</span>
-                        <span>${(total + 5).toFixed(2)}</span>
+                        <span>₪{(total + 5).toFixed(2)}</span>
                     </div>
 
                     <div style={{ marginTop: '20px', position: 'relative', zIndex: 1 }}>
