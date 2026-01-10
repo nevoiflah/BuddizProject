@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Beer, ShoppingCart, Heart, User, Shield } from 'lucide-react';
+import { Home, Beer, ShoppingCart, PawPrint, User, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import './BottomNav.css';
 
@@ -29,7 +29,7 @@ const BottomNav = () => {
                 <span>{t('navCart')}</span>
             </NavLink>
             <NavLink to="/favorites" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                <Heart size={24} />
+                <PawPrint size={24} />
                 <span>{t('navFavorites')}</span>
             </NavLink>
             <NavLink to="/profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>

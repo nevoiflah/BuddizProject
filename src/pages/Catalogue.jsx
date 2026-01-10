@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import './Catalogue.css';
-import { Heart, ShoppingCart, Beer } from 'lucide-react';
+import { PawPrint, ShoppingCart, Beer } from 'lucide-react';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { fetchAuthSession } from 'aws-amplify/auth';
@@ -78,7 +78,7 @@ const Catalogue = () => {
                                     className={`btn-icon ${isFav(beer.id) ? 'active' : ''}`}
                                     onClick={() => toggleFavorite(beer)}
                                 >
-                                    <Heart size={20} fill={isFav(beer.id) ? "currentColor" : "none"} />
+                                    <PawPrint size={20} fill={isFav(beer.id) ? "currentColor" : "none"} />
                                 </button>
                             </div>
                         </div>

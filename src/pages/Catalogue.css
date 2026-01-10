@@ -76,7 +76,7 @@
     gap: var(--spacing-sm);
 }
 
-.btn-fav {
+.btn-icon {
     background: transparent;
     border: 1px solid var(--color-text-muted);
     color: var(--color-text-muted);
@@ -90,12 +90,12 @@
     transition: all 0.2s;
 }
 
-.btn-fav:hover {
+.btn-icon:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
 }
 
-.btn-fav.active {
+.btn-icon.active {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
     color: white;

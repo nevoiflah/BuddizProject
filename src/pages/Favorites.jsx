@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { ShoppingCart, Heart, Beer } from 'lucide-react';
+import { ShoppingCart, PawPrint, Beer } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Catalogue.css'; // Reusing catalogue styles for product grid
 
@@ -11,7 +11,7 @@ const Favorites = () => {
         <div className="page-container animate-fade-in" style={{ padding: 'var(--spacing-md)' }}>
             {favorites.length === 0 ? (
                 <div className="empty-page-container">
-                    <Heart size={64} className="text-muted mb-4" />
+                    <PawPrint size={64} className="text-muted mb-4" />
                     <h2>No favorites yet</h2>
                     <p className="text-muted mb-6">Save your favorite brews here to find them easily later.</p>
                     <Link to="/catalogue" className="btn-primary">Explore Brews</Link>
@@ -32,7 +32,7 @@ const Favorites = () => {
                                         <ShoppingCart size={18} style={{ marginRight: '8px' }} /> Add
                                     </button>
                                     <button onClick={() => removeFromFavorites(beer.id)} className="btn-icon active">
-                                        <Heart size={20} fill="currentColor" />
+                                        <PawPrint size={20} fill="currentColor" />
                                     </button>
                                 </div>
                             </div>
