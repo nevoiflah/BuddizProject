@@ -100,7 +100,8 @@ export const translations = {
         "colDate": "Date",
         "inStock": "In Stock",
         "lowStock": "Low Stock",
-        "outOfStock": "Out of Stock"
+        "outOfStock": "Out of Stock",
+        "comingSoon": "Coming Soon"
     },
     he: {
         // General
@@ -203,6 +204,7 @@ export const translations = {
         "colDate": "תאריך",
         "inStock": "במלאי",
         "lowStock": "מלאי נמוך",
-        "outOfStock": "אזל המלאי"
+        "outOfStock": "אזל המלאי",
+        "comingSoon": "בקרוב"
     }
 };

@@ -70,20 +70,31 @@ const Catalogue = () => {
                             <p className="product-desc">{getProductVal(beer, 'description')}</p>
                             <div className="product-price">₪{beer.price.toFixed(2)}</div>
                             <div className="product-actions">
-                                <button
-                                    className="btn-primary"
-                                    onClick={() => {
-                                        if (!user) {
-                                            if (window.confirm("Please login to add items to cart.")) {
-                                                navigate('/login');
-                                            }
-                                            return;
-                                        }
-                                        addToCart(beer);
-                                    }}
-                                >
-                                    <ShoppingCart size={18} style={{ marginRight: '8px' }} /> {t('addToCart')}
-                                </button>
+                                {(() => {
+                                    const isComingSoon = beer.description === "Coming Soon";
+                                    const isDisabled = !user || isComingSoon;
+
+                                    return (
+                                        <button
+                                            className="btn-primary"
+                                            disabled={isComingSoon}
+                                            style={isComingSoon ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+                                            onClick={() => {
+                                                if (isComingSoon) return;
+                                                if (!user) {
+                                                    if (window.confirm("Please login to add items to cart.")) {
+                                                        navigate('/login');
+                                                    }
+                                                    return;
+                                                }
+                                                addToCart(beer);
+                                            }}
+                                        >
+                                            <ShoppingCart size={18} style={{ marginRight: '8px' }} />
+                                            {isComingSoon ? t('comingSoon') : t('addToCart')}
+                                        </button>
+                                    );
+                                })()}
                                 <button
                                     className={`btn-icon ${isFav(beer.id) ? 'active' : ''}`}
                                     onClick={() => {
