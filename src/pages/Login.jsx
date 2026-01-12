@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signIn } from 'aws-amplify/auth';
+import { signIn, signOut } from 'aws-amplify/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -22,6 +22,9 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
+            // Clear any existing session (including guest identity) to prevent "Logins don't match" error
+            await signOut();
+
             const { isSignedIn, nextStep } = await signIn({ username: email, password });
             if (isSignedIn) {
                 // Force reload to update context or use setUser

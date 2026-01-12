@@ -22,8 +22,8 @@ const Layout = ({ children }) => {
   const { user } = useApp();
   const isAuthPage = ['/login', '/register', '/confirm'].includes(location.pathname);
 
-  // Show BottomNav ONLY if user is logged in AND not on an auth page
-  const showNav = user && !isAuthPage;
+  // Always show BottomNav (User request: show nav on login/register too)
+  const showNav = true;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--color-bg)' }}>

@@ -102,7 +102,7 @@ export const AppProvider = ({ children }) => {
                 name: attributes.name || dbUser.name || currentUser.username,
                 email: attributes.email,
                 username: currentUser.username,
-                ...dbUser // Spread DB attributes (loyaltyPoints, role, etc.)
+                ...dbUser
             });
         } catch (err) {
             // Silence expected error when user is not logged in

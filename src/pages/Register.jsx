@@ -9,6 +9,7 @@ const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [birthdate, setBirthdate] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { t } = useApp();
@@ -16,6 +17,21 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        // Age Verification
+        const today = new Date();
+        const birthDateArgs = new Date(birthdate);
+        let age = today.getFullYear() - birthDateArgs.getFullYear();
+        const m = today.getMonth() - birthDateArgs.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDateArgs.getDate())) {
+            age--;
+        }
+
+        if (age < 18) {
+            setError("You must be 18 years or older to register.");
+            return;
+        }
+
         try {
             // 1. Sign Up User in Cognito (Only send email as attribute if config restricts 'name')
             const { isSignUpComplete, userId, nextStep } = await signUp({
@@ -23,7 +39,8 @@ const Register = () => {
                 password,
                 options: {
                     userAttributes: {
-                        email
+                        email,
+                        birthdate // Standard attribute, format YYYY-MM-DD
                         // Removed 'name' as it might cause 400 if not enabled in User Pool
                     }
                 }
@@ -101,6 +118,16 @@ const Register = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 placeholder={t('passwordPlaceholder')}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Date of Birth</label>
+                            <input
+                                type="date"
+                                value={birthdate}
+                                onChange={(e) => setBirthdate(e.target.value)}
+                                required
                             />
                         </div>
 

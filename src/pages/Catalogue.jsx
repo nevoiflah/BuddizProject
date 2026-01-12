@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './Catalogue.css';
 import { PawPrint, ShoppingCart, Beer } from 'lucide-react';
@@ -9,9 +10,10 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import productImg from '../assets/BuddizProduct.png';
 
 const Catalogue = () => {
-    const { addToCart, toggleFavorite, favorites, t, language } = useApp();
+    const { addToCart, toggleFavorite, favorites, t, language, user } = useApp();
     const [beers, setBeers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBeers();
@@ -41,7 +43,7 @@ const Catalogue = () => {
         }
     };
 
-    const isFav = (id) => favorites.some(item => item.id === id);
+    const isFav = (id) => user && favorites.some(item => item.id === id);
 
     // Helper to get translated product fields
     const getProductVal = (product, field) => {
@@ -70,13 +72,27 @@ const Catalogue = () => {
                             <div className="product-actions">
                                 <button
                                     className="btn-primary"
-                                    onClick={() => addToCart(beer)}
+                                    onClick={() => {
+                                        if (!user) {
+                                            if (window.confirm("Please login to add items to cart.")) {
+                                                navigate('/login');
+                                            }
+                                            return;
+                                        }
+                                        addToCart(beer);
+                                    }}
                                 >
                                     <ShoppingCart size={18} style={{ marginRight: '8px' }} /> {t('addToCart')}
                                 </button>
                                 <button
                                     className={`btn-icon ${isFav(beer.id) ? 'active' : ''}`}
-                                    onClick={() => toggleFavorite(beer)}
+                                    onClick={() => {
+                                        if (!user) {
+                                            navigate('/login');
+                                            return;
+                                        }
+                                        toggleFavorite(beer);
+                                    }}
                                 >
                                     <PawPrint size={20} fill={isFav(beer.id) ? "currentColor" : "none"} />
                                 </button>

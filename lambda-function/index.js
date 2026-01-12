@@ -13,8 +13,20 @@ exports.handler = async (event, context) => {
             const email = userAttributes.email;
             const username = event.userName;
 
-            // Default name if not provided (Cognito standard attributes)
+            // Default name if not provided
             const name = userAttributes.name || userAttributes.given_name || username;
+
+            // Calculate Age from birthdate (YYYY-MM-DD or similar standard format)
+            let age = 25; // Default fallback
+            if (userAttributes.birthdate) {
+                const birthDateArgs = new Date(userAttributes.birthdate);
+                const today = new Date();
+                age = today.getFullYear() - birthDateArgs.getFullYear();
+                const m = today.getMonth() - birthDateArgs.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDateArgs.getDate())) {
+                    age--;
+                }
+            }
 
             const newUser = {
                 id: email, // Key matches our existing schema
@@ -22,7 +34,8 @@ exports.handler = async (event, context) => {
                 username: username,
                 name: name,
                 role: 'USER',
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                age: age
             };
 
             await docClient.send(new PutCommand({

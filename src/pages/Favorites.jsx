@@ -1,12 +1,19 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { ShoppingCart, PawPrint, Beer } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Catalogue.css'; // Reusing catalogue styles for product grid
 import productImg from '../assets/BuddizProduct.png';
 
 const Favorites = () => {
-    const { favorites, removeFromFavorites, addToCart } = useApp();
+    const { favorites, removeFromFavorites, addToCart, user } = useApp();
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+    }, [user, navigate]);
 
     return (
         <div className="page-container animate-fade-in" style={{ padding: 'var(--spacing-md)' }}>

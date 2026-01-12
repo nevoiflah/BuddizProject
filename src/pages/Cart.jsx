@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -10,6 +10,12 @@ const Cart = () => {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+        }
+    }, [user, navigate]);
 
     const getProductVal = (product, field) => {
         if (language === 'he') {

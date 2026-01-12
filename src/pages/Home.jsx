@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import logo from '../assets/BuddizLogo.jpeg';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Home.css';
 
 const Home = () => {
@@ -24,8 +25,10 @@ const Home = () => {
                             <Link to="/catalogue" className="btn-primary">{t('viewCatalogue')}</Link>
                         ) : (
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <Link to="/login" className="btn-primary">{t('loginBtn')}</Link>
-                                <Link to="/register" className="btn-secondary">{t('signUpBtn')}</Link>
+                                {/* Login/Register removed as they are now in the bottom nav */}
+                                <div className="home-lang-switch">
+                                    <LanguageSwitcher />
+                                </div>
                             </div>
                         )}
                     </div>
