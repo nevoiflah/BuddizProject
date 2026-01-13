@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -84,26 +84,26 @@ export const handler = async (event) => {
             const data = await response.json();
 
             if (data.status === "COMPLETED") {
-                // Payment successful. Now update Database.
+                // Payment successful. Now update Database Atomically.
 
-                // 1. Decrement Stock
-                for (const item of cart) {
-                    try {
-                        await docClient.send(new UpdateCommand({
+                const transactItems = [];
+
+                // 1. Prepare Stock Decrements
+                cart.forEach(item => {
+                    transactItems.push({
+                        Update: {
                             TableName: "BUDDIZ-Beers",
                             Key: { id: item.id },
                             UpdateExpression: "set stock = stock - :qty",
                             ConditionExpression: "stock >= :qty",
                             ExpressionAttributeValues: { ":qty": item.quantity }
-                        }));
-                    } catch (err) {
-                        console.error(`Failed to decrement stock for ${item.name}`, err);
-                    }
-                }
+                        }
+                    });
+                });
 
-                // 2. Create Order
+                // 2. Prepare Order Creation
                 const newOrder = {
-                    orderId: orderID,
+                    id: orderID, // Use 'id' to match Primary Key
                     userId: userEmail,
                     items: cart,
                     total: data.purchase_units[0].payments.captures[0].amount.value,
@@ -113,16 +113,34 @@ export const handler = async (event) => {
                     currency: "ILS"
                 };
 
-                await docClient.send(new PutCommand({
-                    TableName: "BUDDIZ-Orders",
-                    Item: newOrder
-                }));
+                transactItems.push({
+                    Put: {
+                        TableName: "BUDDIZ-Orders",
+                        Item: newOrder
+                    }
+                });
 
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ status: "success", order: newOrder }),
-                };
+                try {
+                    await docClient.send(new TransactWriteCommand({
+                        TransactItems: transactItems
+                    }));
+
+                    return {
+                        statusCode: 200,
+                        headers,
+                        body: JSON.stringify({ status: "success", order: newOrder }),
+                    };
+
+                } catch (dbError) {
+                    console.error("Transaction Failed:", dbError);
+                    // If DB update fails, we should technically refund or log a critical error
+                    // For now, return error to frontend
+                    return {
+                        statusCode: 500,
+                        headers,
+                        body: JSON.stringify({ error: "Inventory update failed", details: dbError.message }),
+                    };
+                }
             }
 
             return {

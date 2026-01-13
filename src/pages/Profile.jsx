@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signOut, updatePassword, fetchAuthSession } from 'aws-amplify/auth';
 import { useApp } from '../context/AppContext';
 import { LogOut, Save, Lock, User, Edit2 } from 'lucide-react';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Profile.css';
 
@@ -60,6 +60,37 @@ const Profile = () => {
             alert("Failed to update profile.");
         }
         setLoading(false);
+    };
+
+    const [orders, setOrders] = useState([]);
+    const [ordersLoading, setOrdersLoading] = useState(true);
+
+    useEffect(() => {
+        if (user?.email) {
+            fetchOrders();
+        }
+    }, [user]);
+
+    const fetchOrders = async () => {
+        try {
+            const { credentials } = await fetchAuthSession();
+            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
+            const docClient = DynamoDBDocumentClient.from(client);
+
+            const command = new ScanCommand({
+                TableName: "BUDDIZ-Orders",
+                FilterExpression: "userId = :email",
+                ExpressionAttributeValues: {
+                    ":email": user.email
+                }
+            });
+
+            const response = await docClient.send(command);
+            setOrders((response.Items || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+        } catch (err) {
+            console.error("Error fetching orders:", err);
+        }
+        setOrdersLoading(false);
     };
 
     const handleUpdatePassword = async (e) => {
@@ -208,10 +239,32 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-card">
-                    <h3>Order History</h3>
-                    <div className="empty-state">
-                        <p className="text-muted">No recent orders.</p>
-                    </div>
+                    <h3>{t('orderHistory') || 'Order History'}</h3>
+                    {ordersLoading ? (
+                        <div className="text-muted">Loading...</div>
+                    ) : orders.length === 0 ? (
+                        <div className="empty-state">
+                            <p className="text-muted">{t('noRecentOrders') || 'No recent orders.'}</p>
+                        </div>
+                    ) : (
+                        <div className="orders-list">
+                            {orders.map(order => (
+                                <div key={order.id || order.orderId} className="order-item" style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                        <span style={{ fontWeight: 'bold' }}>#{(order.id || order.orderId).substring(0, 8)}</span>
+                                        <span className={`badge ${order.status === 'Paid' ? 'badge-success' : 'badge-warning'}`}>{order.status}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
+                                        <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                                        <span>₪{order.total}</span>
+                                    </div>
+                                    <div style={{ fontSize: '0.85rem', marginTop: '4px', color: '#888' }}>
+                                        {order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

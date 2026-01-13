@@ -24,7 +24,7 @@ const Cart = () => {
         return product[field];
     };
 
-    const LAMBDA_URL = "https://xelq5cmvtj.execute-api.eu-north-1.amazonaws.com/";
+    const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
 
     const createOrder = async (data, actions) => {
         if (!user) {

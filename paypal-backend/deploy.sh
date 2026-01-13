@@ -63,28 +63,17 @@ else
 fi
 
 # 5. Create Function URL (Public)
-echo "Configuring Function URL..."
-aws lambda create-function-url-config \
-    --function-name $FUNCTION_NAME \
-    --auth-type NONE \
-    --cors '{"AllowOrigins": ["*"], "AllowMethods": ["*"], "AllowHeaders": ["Content-Type"]}' 2>/dev/null || \
-aws lambda update-function-url-config \
-    --function-name $FUNCTION_NAME \
-    --auth-type NONE \
-    --cors '{"AllowOrigins": ["*"], "AllowMethods": ["*"], "AllowHeaders": ["Content-Type"]}'
-
-# 6. Public Permission (Critical for Function URL)
-echo "Adding permission for public access..."
-aws lambda add-permission \
-    --function-name $FUNCTION_NAME \
-    --statement-id FunctionURLAllowPublicAccess \
-    --action lambda:InvokeFunctionUrl \
-    --principal "*" \
-    --function-url-auth-type NONE || true
-
-# 7. Get URL
-FUNC_URL=$(aws lambda get-function-url-config --function-name $FUNCTION_NAME --query FunctionUrl --output text)
-echo "------------------------------------------------"
-echo "DEPLOYMENT COMPLETE"
-echo "Lambda URL: $FUNC_URL"
-echo "------------------------------------------------"
+# 5. Get API Gateway URL
+API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='BuddizPayPalAPI'].ApiId" --output text)
+if [ -n "$API_ID" ] && [ "$API_ID" != "None" ]; then
+    API_ENDPOINT=$(aws apigatewayv2 get-api --api-id $API_ID --query ApiEndpoint --output text)
+    echo "------------------------------------------------"
+    echo "DEPLOYMENT COMPLETE"
+    echo "API Gateway URL: $API_ENDPOINT"
+    echo "------------------------------------------------"
+else
+    echo "------------------------------------------------"
+    echo "DEPLOYMENT COMPLETE (Code Updated)"
+    echo "Warning: API Gateway 'BuddizPayPalAPI' not found."
+    echo "------------------------------------------------"
+fi

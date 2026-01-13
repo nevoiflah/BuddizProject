@@ -242,8 +242,8 @@ const AdminDashboard = () => {
                                         </thead>
                                         <tbody>
                                             {orders.map(o => (
-                                                <tr key={o.orderId}>
-                                                    <td>{o.orderId.substring(0, 8)}...</td>
+                                                <tr key={o.id || o.orderId}>
+                                                    <td>{(o.id || o.orderId || 'N/A').toString().substring(0, 8)}...</td>
                                                     <td>{o.userId}</td>
                                                     <td>₪{o.total}</td>
                                                     <td>{new Date(o.createdAt).toLocaleDateString()}</td>
