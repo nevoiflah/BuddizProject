@@ -252,7 +252,12 @@ const Profile = () => {
                                 <div key={order.id || order.orderId} className="order-item" style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                                         <span style={{ fontWeight: 'bold' }}>#{(order.id || order.orderId).substring(0, 8)}</span>
-                                        <span className={`badge ${order.status === 'Paid' ? 'badge-success' : 'badge-warning'}`}>{order.status}</span>
+                                        <span className={`badge ${order.status === 'Paid' ? 'badge-success' :
+                                                order.status === 'PENDING_APPROVAL' ? 'badge-warning' :
+                                                    'badge-danger'
+                                            }`}>
+                                            {order.status === 'PENDING_APPROVAL' ? 'Pending' : order.status}
+                                        </span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
                                         <span>{new Date(order.createdAt).toLocaleDateString()}</span>

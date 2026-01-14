@@ -105,6 +105,65 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleApproveOrder = async (order) => {
+        if (!window.confirm(`Approve order ${order.id}? Payment will be captured.`)) return;
+        setLoading(true);
+        try {
+            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
+            const response = await fetch(LAMBDA_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "approveOrder",
+                    orderID: order.id,
+                    userId: order.userId, // Added userId for Composite Key
+                    paypalOrderId: order.paypalOrderId,
+                    authorizationId: order.authorizationId
+                })
+            });
+            const result = await response.json();
+            if (result.status === "success") {
+                alert("Order Approved!");
+                fetchData(); // Refresh data
+            } else {
+                alert("Approval failed: " + JSON.stringify(result));
+            }
+        } catch (err) {
+            console.error("Approve Error:", err);
+            alert("Error approving order.");
+        }
+        setLoading(false);
+    };
+
+    const handleDenyOrder = async (order) => {
+        if (!window.confirm(`Deny order ${order.id}? Payment will be voided.`)) return;
+        setLoading(true);
+        try {
+            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
+            const response = await fetch(LAMBDA_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "denyOrder",
+                    orderID: order.id,
+                    userId: order.userId, // Added userId for Composite Key
+                    authorizationId: order.authorizationId
+                })
+            });
+            const result = await response.json();
+            if (result.status === "success") {
+                alert("Order Denied.");
+                fetchData(); // Refresh data
+            } else {
+                alert("Denial failed: " + JSON.stringify(result));
+            }
+        } catch (err) {
+            console.error("Deny Error:", err);
+            alert("Error denying order.");
+        }
+        setLoading(false);
+    };
+
     const TabButton = ({ id, icon: Icon, label }) => (
         <button
             className={`admin-tab ${activeTab === id ? 'active' : ''}`}
@@ -237,16 +296,49 @@ const AdminDashboard = () => {
                                                 <th>{t('colOrderId')}</th>
                                                 <th>{t('colCustomer')}</th>
                                                 <th>{t('colTotal')}</th>
-                                                <th>{t('colDate')}</th>
+                                                <th>{t('colStatus')}</th>
+                                                <th>{t('colActions')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {orders.map(o => (
                                                 <tr key={o.id || o.orderId}>
-                                                    <td>{(o.id || o.orderId || 'N/A').toString().substring(0, 8)}...</td>
+                                                    <td>
+                                                        {(o.id || o.orderId || 'N/A').toString().substring(0, 8)}...
+                                                        {o.status === 'PENDING_APPROVAL' && <span className="warning-dot" title="Pending Approval"></span>}
+                                                    </td>
                                                     <td>{o.userId}</td>
                                                     <td>₪{o.total}</td>
-                                                    <td>{new Date(o.createdAt).toLocaleDateString()}</td>
+                                                    <td>
+                                                        <span className={`badge ${o.status === 'Paid' ? 'badge-success' :
+                                                            o.status === 'PENDING_APPROVAL' ? 'badge-warning' :
+                                                                'badge-danger'
+                                                            }`}>
+                                                            {o.status || 'Pending'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        {o.status === 'PENDING_APPROVAL' && (
+                                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                                <button
+                                                                    className="btn-icon"
+                                                                    title="Approve Order"
+                                                                    onClick={() => handleApproveOrder(o)}
+                                                                    style={{ color: 'green' }}
+                                                                >
+                                                                    <Shield size={18} />
+                                                                </button>
+                                                                <button
+                                                                    className="btn-icon"
+                                                                    title="Deny Order"
+                                                                    onClick={() => handleDenyOrder(o)}
+                                                                    style={{ color: 'red' }}
+                                                                >
+                                                                    <ShieldOff size={18} />
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>

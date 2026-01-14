@@ -22,7 +22,21 @@ const ConfirmEmail = () => {
         setError('');
         try {
             await confirmSignUp({ username: email, confirmationCode: code });
-            // Success! Redirect to login
+
+            // Trigger SES Verification
+            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
+            try {
+                await fetch(LAMBDA_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "verifyUserIdentity", email: email })
+                });
+            } catch (verErr) {
+                console.error("Verification trigger failed", verErr);
+            }
+
+            // Success! Redirect to login (or show message)
+            alert("Account confirmed! IMPORTANT: Please check your email and click the AWS verification link to receive order updates.");
             navigate('/login');
         } catch (err) {
             setError(err.message);

@@ -38,6 +38,7 @@ aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document '{
 # 2. Attach Policies (Basic Execution + DynamoDB Full Access for simplicity)
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonSESFullAccess
 
 echo "Waiting for role propagation..."
 sleep 10

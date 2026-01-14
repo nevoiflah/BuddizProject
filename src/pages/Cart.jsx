@@ -56,7 +56,7 @@ const Cart = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    action: "captureOrder",
+                    action: "createPendingOrder",
                     orderID: data.orderID,
                     userEmail: user.email || user.username,
                     cart: cart
@@ -66,15 +66,15 @@ const Cart = () => {
 
             if (result.status === "success") {
                 clearCart();
-                alert(t?.paymentSuccess || "Payment Successful! 🍺");
+                alert(t?.orderPending || "Thank you for your order! It is waiting for admin approval. Check your email.");
                 navigate('/profile');
             } else {
-                console.error("Capture failed:", result);
-                alert("Payment failed. Please try again.");
+                console.error("Order process failed:", result);
+                alert("Order processing failed. Please try again.");
             }
         } catch (err) {
-            console.error("Capture Error:", err);
-            alert("An error occurred during payment.");
+            console.error("Order Error:", err);
+            alert("An error occurred during order processing.");
         }
         setIsCheckingOut(false);
     };
@@ -132,6 +132,7 @@ const Cart = () => {
                             options={{
                                 "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
                                 currency: "ILS",
+                                intent: "authorize",
                                 locale: language === 'he' ? 'he_IL' : 'en_US'
                             }}
                         >
