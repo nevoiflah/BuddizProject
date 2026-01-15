@@ -108,6 +108,30 @@
     font-size: 0.75rem;
 }
 
+.badge-success {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.badge-warning {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.badge-danger {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
 .status-dot {
     display: inline-block;
     width: 8px;
@@ -126,6 +150,16 @@
 
 .status-dot.danger {
     background-color: #e74c3c;
+}
+
+.warning-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #f1c40f;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
 @media (max-width: 768px) {

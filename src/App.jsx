@@ -14,6 +14,7 @@ const Cart = lazy(() => import('./pages/Cart'));
 const Favorites = lazy(() => import('./pages/Favorites'));
 const Profile = lazy(() => import('./pages/Profile'));
 const ConfirmEmail = lazy(() => import('./pages/ConfirmEmail'));
+const OrderPending = lazy(() => import('./pages/OrderPending'));
 
 import { useApp } from './context/AppContext';
 
@@ -51,6 +52,7 @@ function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/confirm" element={<ConfirmEmail />} />
+              <Route path="/order-pending" element={<OrderPending />} />
             </Routes>
           </Suspense>
         </Layout>

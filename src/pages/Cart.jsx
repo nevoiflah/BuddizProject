@@ -66,8 +66,8 @@ const Cart = () => {
 
             if (result.status === "success") {
                 clearCart();
-                alert(t?.orderPending || "Thank you for your order! It is waiting for admin approval. Check your email.");
-                navigate('/profile');
+                // alert(t?.orderPending || "Thank you for your order! It is waiting for admin approval. Check your email.");
+                navigate('/order-pending');
             } else {
                 console.error("Order process failed:", result);
                 alert("Order processing failed. Please try again.");

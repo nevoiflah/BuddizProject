@@ -26,14 +26,16 @@ async function getAccessToken() {
 
 const SENDER_EMAIL = "nevo.iflah6@gmail.com"; // Admin email verified as sender
 
-async function sendEmail(to, subject, body) {
+async function sendEmail(to, subject, body, isHtml = false) {
     try {
         const command = new SendEmailCommand({
             Source: SENDER_EMAIL,
             Destination: { ToAddresses: [to] },
             Message: {
                 Subject: { Data: subject },
-                Body: { Text: { Data: body } }
+                Body: isHtml
+                    ? { Html: { Data: body } }
+                    : { Text: { Data: body } }
             }
         });
         await sesClient.send(command);
@@ -94,6 +96,10 @@ export const handler = async (event) => {
                 },
                 body: JSON.stringify({
                     intent: "AUTHORIZE",
+                    application_context: {
+                        landing_page: "LOGIN",
+                        user_action: "PAY_NOW"
+                    },
                     purchase_units: [{
                         amount: {
                             currency_code: "ILS",
@@ -255,11 +261,63 @@ export const handler = async (event) => {
                     throw new Error(`DB Transaction Failed: ${failReason}`);
                 }
 
-                // 4. Send Email
+                // 4. Send Email (HTML Invoice)
+                const itemsHtml = order.items.map(item => `
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name_he || item.name}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.quantity}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">₪${Number(item.price).toFixed(2)}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">₪${(Number(item.price) * Number(item.quantity)).toFixed(2)}</td>
+                    </tr>
+                `).join('');
+
+                const invoiceHtml = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                        <div style="background-color: #ffd700; padding: 20px; text-align: center;">
+                            <h1 style="margin: 0; color: #000;">Buddiz Payment Confirmation</h1>
+                            <p style="margin: 5px 0 0;">Transaction Approved</p>
+                        </div>
+                        <div style="padding: 20px;">
+                            <p>Hello,</p>
+                            <p>Thank you for shopping with Buddiz! Your payment has been successfully captured and your order is on its way.</p>
+                            
+                            <h3 style="margin-top: 20px; border-bottom: 2px solid #ffd700; padding-bottom: 5px;">Order Details</h3>
+                            <p><strong>Order ID:</strong> ${orderID}</p>
+                            <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                            
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <thead>
+                                    <tr style="background-color: #f8f8f8; text-align: left;">
+                                        <th style="padding: 10px; border-bottom: 2px solid #ddd;">Item</th>
+                                        <th style="padding: 10px; border-bottom: 2px solid #ddd;">Qty</th>
+                                        <th style="padding: 10px; border-bottom: 2px solid #ddd;">Price</th>
+                                        <th style="padding: 10px; border-bottom: 2px solid #ddd;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${itemsHtml}
+                                </tbody>
+                            </table>
+                            
+                             <div style="margin-top: 20px; text-align: right;">
+                                <p style="margin: 5px 0;">Subtotal: ₪${(Number(order.total) - 5).toFixed(2)}</p>
+                                <p style="margin: 5px 0;">Shipping: ₪5.00</p>
+                                <h3 style="margin: 10px 0; color: #000;">Grand Total: ₪${Number(order.total).toFixed(2)}</h3>
+                            </div>
+                            
+                            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 12px; color: #666; text-align: center;">
+                                <p>If you have any questions, please reply to this email.</p>
+                                <p>&copy; ${new Date().getFullYear()} Buddiz.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
                 await sendEmail(
                     order.userId,
-                    "Order Approved!",
-                    `Great news! Your order (${order.id}) has been approved and payment captured.\n\nThank you for shopping with Buddiz!`
+                    "Receipt for Your Buddiz Order",
+                    invoiceHtml,
+                    true // isHtml = true
                 );
 
                 return {
