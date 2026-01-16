@@ -12,4 +12,8 @@ export default defineConfig({
       './runtimeConfig': './runtimeConfig.browser',
     },
   },
+  build: {
+    minify: false,
+    sourcemap: false
+  }
 })

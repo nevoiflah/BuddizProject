@@ -24,7 +24,7 @@ async function getAccessToken() {
     return data.access_token;
 }
 
-const SENDER_EMAIL = "nevo.iflah6@gmail.com"; // Admin email verified as sender
+const SENDER_EMAIL = "buddizbeer@gmail.com"; // Admin email verified as sender
 
 async function sendEmail(to, subject, body, isHtml = false) {
     try {
@@ -39,7 +39,6 @@ async function sendEmail(to, subject, body, isHtml = false) {
             }
         });
         await sesClient.send(command);
-        console.log(`Email sent to ${to}`);
         return { success: true };
     } catch (error) {
         console.error("Failed to send email:", error);
@@ -204,7 +203,6 @@ export const handler = async (event) => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     if (errorText.includes("AUTHORIZATION_ALREADY_CAPTURED")) {
-                        console.log("Authorization already captured. Proceeding to DB update.");
                         data = { status: "COMPLETED" };
                     } else {
                         throw new Error(`PayPal Capture Failed: ${response.status} ${errorText}`);

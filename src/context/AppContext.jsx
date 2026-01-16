@@ -77,7 +77,7 @@ export const AppProvider = ({ children }) => {
 
             // Fetch Favorites from DynamoDB
             try {
-                console.log("Fetching favorites for:", attributes.email);
+
                 const favCommand = new QueryCommand({
                     TableName: "BUDDIZ-UserFavorites",
                     KeyConditionExpression: "userId = :uid",
@@ -87,7 +87,7 @@ export const AppProvider = ({ children }) => {
                 });
                 const favResponse = await docClient.send(favCommand);
                 if (favResponse.Items) {
-                    console.log("Favorites fetched:", favResponse.Items.length);
+
                     // We store the full product object in 'product' attribute
                     const storedFavs = favResponse.Items.map(item => item.product).filter(Boolean);
                     if (storedFavs.length > 0) {
@@ -107,7 +107,7 @@ export const AppProvider = ({ children }) => {
         } catch (err) {
             // Silence expected error when user is not logged in
             if (err.name === 'UserUnAuthenticatedException' || err.message === 'The user is not authenticated') {
-                console.log("User is not signed in.");
+
             } else {
                 console.error("Error in checkUser:", err);
             }
@@ -138,8 +138,7 @@ export const AppProvider = ({ children }) => {
     };
 
     const toggleFavorite = async (product) => {
-        console.log("toggleFavorite called for:", product.id);
-        console.log("Current User State:", user);
+
 
         // Optimistic UI update
         const isFav = favorites.find(f => f.id === product.id);
@@ -154,7 +153,7 @@ export const AppProvider = ({ children }) => {
         } else {
             setFavorites(prev => [...prev, product]);
             if (user && user.email) {
-                console.log("Calling addToFavoritesDB via toggle...");
+
                 addToFavoritesDB(user.email, product);
             } else {
                 console.warn("User or email missing, skipping DB write. User object:", user);
@@ -169,7 +168,7 @@ export const AppProvider = ({ children }) => {
 
     // DynamoDB Helpers
     const addToFavoritesDB = async (userId, product) => {
-        console.log("Attempting to add favorite to DB:", { userId, productId: product.id });
+
         try {
             const { credentials } = await fetchAuthSession();
             const client = new DynamoDBClient({ region: "eu-north-1", credentials });
@@ -193,7 +192,7 @@ export const AppProvider = ({ children }) => {
     };
 
     const removeFromFavoritesDB = async (userId, productId) => {
-        console.log("Attempting to remove favorite from DB:", { userId, productId });
+
         try {
             const { credentials } = await fetchAuthSession();
             const client = new DynamoDBClient({ region: "eu-north-1", credentials });
@@ -205,7 +204,7 @@ export const AppProvider = ({ children }) => {
                     productId: productId
                 }
             }));
-            console.log("Successfully removed favorite from DB");
+
         } catch (err) {
             console.error("Error removing favorite from DB:", err);
         }

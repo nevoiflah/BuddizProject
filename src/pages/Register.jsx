@@ -46,7 +46,7 @@ const Register = () => {
                 }
             });
 
-            console.log("Sign up success:", userId);
+
 
             // 2. Add User to DynamoDB (BUDDIZ-Users)
             // We need credentials to write to DynamoDB.

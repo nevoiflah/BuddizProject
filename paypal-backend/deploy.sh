@@ -52,7 +52,7 @@ echo "Deploying Lambda..."
 if aws lambda get-function --function-name $FUNCTION_NAME > /dev/null 2>&1; then
     aws lambda update-function-code --function-name $FUNCTION_NAME --zip-file fileb://function.zip
     aws lambda update-function-configuration --function-name $FUNCTION_NAME \
-        --environment "Variables={PAYPAL_CLIENT_ID=$PAYPAL_CLIENT_ID,PAYPAL_CLIENT_SECRET=$PAYPAL_CLIENT_SECRET,PAYPAL_MODE=sandbox}"
+        --environment "Variables={PAYPAL_CLIENT_ID=$PAYPAL_CLIENT_ID,PAYPAL_CLIENT_SECRET=$PAYPAL_CLIENT_SECRET,PAYPAL_MODE=live}"
 else
     aws lambda create-function \
         --function-name $FUNCTION_NAME \
@@ -60,7 +60,7 @@ else
         --role arn:aws:iam::$ACCOUNT_ID:role/$ROLE_NAME \
         --handler index.handler \
         --zip-file fileb://function.zip \
-        --environment "Variables={PAYPAL_CLIENT_ID=$PAYPAL_CLIENT_ID,PAYPAL_CLIENT_SECRET=$PAYPAL_CLIENT_SECRET,PAYPAL_MODE=sandbox}"
+        --environment "Variables={PAYPAL_CLIENT_ID=$PAYPAL_CLIENT_ID,PAYPAL_CLIENT_SECRET=$PAYPAL_CLIENT_SECRET,PAYPAL_MODE=live}"
 fi
 
 # 5. Create Function URL (Public)

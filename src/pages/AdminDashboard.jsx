@@ -43,7 +43,7 @@ const AdminDashboard = () => {
                 const orderScan = await docClient.send(new ScanCommand({ TableName: "BUDDIZ-Orders" }));
                 setOrders(orderScan.Items || []);
             } catch (e) {
-                console.log("Orders table missing", e);
+
             }
 
         } catch (error) {
