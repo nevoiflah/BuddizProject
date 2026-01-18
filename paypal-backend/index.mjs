@@ -87,7 +87,7 @@ const generateItemsTable = (items, total, shipping = 5) => {
                     <td style="padding: 12px; text-align: right; color: #374151;">₪${(Number(total) - shipping).toFixed(2)}</td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="padding: 12px; text-align: right; color: #6b7280;">Shipping</td>
+                    <td colspan="3" style="padding: 12px; text-align: right; color: #6b7280;">Service Fee</td>
                     <td style="padding: 12px; text-align: right; color: #374151;">₪${shipping.toFixed(2)}</td>
                 </tr>
                 <tr style="font-size: 16px; font-weight: 700;">
