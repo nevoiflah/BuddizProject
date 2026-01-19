@@ -27,12 +27,14 @@ const Layout = ({ children }) => {
   const showNav = true;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--color-bg)' }}>
-      <main style={{ flex: 1, paddingBottom: showNav ? '80px' : '20px' }}>
-        {children}
-      </main>
+    <>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
+        <main style={{ flex: 1, paddingBottom: showNav ? '80px' : '20px' }}>
+          {children}
+        </main>
+      </div>
       {showNav && <BottomNav />}
-    </div>
+    </>
   );
 };
 

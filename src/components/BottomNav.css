@@ -14,6 +14,10 @@
     /* Extra padding for safe area */
     z-index: 1000;
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    transform: translateZ(0);
+    /* Force hardware acceleration */
+    contain: layout paint;
+    /* Performance optimization */
 }
 
 .nav-item {
