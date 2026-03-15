@@ -42,8 +42,19 @@ export const translations = {
 
         // Catalogue
         "ourBrews": "Our Brews",
+        "catalogueHeroTitle": "The Brewery",
+        "catalogueHeroDescription": "Explore our collection of craft beers, each brewed with loyalty, character, and a touch of adventure.",
         "addToCart": "Add to Cart",
         "productStyle": "Style",
+        "filterAll": "All Brews",
+        "filterIPA": "IPAs",
+        "filterLager": "Lagers",
+        "filterStout": "Stouts",
+        "filterOther": "Other Styles",
+        "sortBy": "Sort By",
+        "priceLowHigh": "Price: Low to High",
+        "priceHighLow": "Price: High to Low",
+        "abvHighLow": "Strongest First",
 
         // Cart
         "yourCart": "Your Cart",
@@ -147,8 +158,19 @@ export const translations = {
 
         // Catalogue
         "ourBrews": "הבירות שלנו",
+        "catalogueHeroTitle": "המבשלה",
+        "catalogueHeroDescription": "גלו את אוסף בירות הקראפט שלנו, שכל אחת מהן בושלה עם נאמנות, אופי ונגיעה של הרפתקה.",
         "addToCart": "הוסף לעגלה",
         "productStyle": "סגנון",
+        "filterAll": "כל הבירות",
+        "filterIPA": "IPA",
+        "filterLager": "לאגר",
+        "filterStout": "סטאוט",
+        "filterOther": "סגנונות נוספים",
+        "sortBy": "מיון לפי",
+        "priceLowHigh": "מחיר: מהנמוך לגבוה",
+        "priceHighLow": "מחיר: מהגבוה לנמוך",
+        "abvHighLow": "הכי חזק קודם",
 
         // Cart
         "yourCart": "העגלה שלך",
