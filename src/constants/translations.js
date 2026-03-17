@@ -21,6 +21,8 @@ export const translations = {
         "dontHaveAccount": "Don't have an account?",
         "alreadyHaveAccount": "Already have an account?",
         "userAlreadyExists": "User already exists. Please Log In with your credentials.",
+        "alreadyAbove18": "You must be 18 years or older to register.",
+        "ageError": "Age Verification Error",
 
         // Home
         "heroTitle": "Buddiz",
@@ -44,6 +46,11 @@ export const translations = {
         "ourBrews": "Our Brews",
         "catalogueHeroTitle": "The Brewery",
         "catalogueHeroDescription": "Explore our collection of craft beers, each brewed with loyalty, character, and a touch of adventure.",
+        "favoritesHeroTitle": "Your Favorites",
+        "favoritesHeroSubtitle": "The brews you love, all in one place.",
+        "noFavoritesTitle": "Find Your First Favorite",
+        "noFavoritesSub": "Looks like you haven't saved any brews yet. Explore our collection and find your perfect buddy!",
+        "exploreBrews": "Explore Brews",
         "addToCart": "Add to Cart",
         "productStyle": "Style",
         "filterAll": "All Brews",
@@ -67,6 +74,11 @@ export const translations = {
         "checkout": "Proceed to Checkout",
         "processing": "Processing...",
         "qty": "Qty",
+        "orderPending": "Thank you for your order! It is waiting for admin approval. Check your email.",
+        "loginToPay": "Please login to complete your purchase!",
+        "loginToPaySub": "Please login to pay",
+        "processingFailed": "Order processing failed. Please try again.",
+        "orderError": "An error occurred during order processing.",
 
         // Profile
         "profileTitle": "Profile Details",
@@ -84,6 +96,14 @@ export const translations = {
         "userBadge": "USER",
         "orderHistory": "Order History",
         "noOrders": "No recent orders.",
+        "username": "Username",
+        "role": "Role",
+        "dob": "Date of Birth",
+        "profileUpdateSuccess": "Profile updated successfully!",
+        "profileUpdateFail": "Failed to update profile.",
+        "orderStatusPending": "Pending",
+        "orderStatusPaid": "Paid",
+        "orderStatusFailed": "Failed",
 
         // Admin
         "adminDashboard": "Admin Dashboard",
@@ -137,6 +157,8 @@ export const translations = {
         "dontHaveAccount": "אין לך חשבון?",
         "alreadyHaveAccount": "כבר רשום?",
         "userAlreadyExists": "המשתמש כבר קיים. אנא התחבר עם הפרטים שלך.",
+        "alreadyAbove18": "עליך להיות בן 18 ומעלה כדי להירשם.",
+        "ageError": "שגיאת אימות גיל",
 
         // Home
         "heroTitle": "באדיז",
@@ -160,6 +182,11 @@ export const translations = {
         "ourBrews": "הבירות שלנו",
         "catalogueHeroTitle": "המבשלה",
         "catalogueHeroDescription": "גלו את אוסף בירות הקראפט שלנו, שכל אחת מהן בושלה עם נאמנות, אופי ונגיעה של הרפתקה.",
+        "favoritesHeroTitle": "המועדפים שלך",
+        "favoritesHeroSubtitle": "הבירות שאתם אוהבים, כולן במקום אחד.",
+        "noFavoritesTitle": "מצאו את המועדפת הראשונה",
+        "noFavoritesSub": "נראה שעדיין לא שמרתם בירות. גלו את האוסף שלנו ומצאו את החבר המושלם!",
+        "exploreBrews": "גלו עוד בירות",
         "addToCart": "הוסף לעגלה",
         "productStyle": "סגנון",
         "filterAll": "כל הבירות",
@@ -183,6 +210,11 @@ export const translations = {
         "checkout": "המשך לתשלום",
         "processing": "מעבד...",
         "qty": "כמות",
+        "orderPending": "תודה על ההזמנה! היא ממתינה לאישור מנהל. בדקו את האימייל שלכם.",
+        "loginToPay": "אנא התחברו כדי להשלים את הרכישה!",
+        "loginToPaySub": "אנא התחברו כדי לשלם",
+        "processingFailed": "עיבוד ההזמנה נכשל. אנא נסו שוב.",
+        "orderError": "אירעה שגיאה במהלך עיבוד ההזמנה.",
 
         // Profile
         "profileTitle": "פרטי פרופיל",
@@ -200,6 +232,14 @@ export const translations = {
         "userBadge": "משתמש",
         "orderHistory": "היסטוריית הזמנות",
         "noOrders": "אין הזמנות אחרונות.",
+        "username": "שם משתמש",
+        "role": "תפקיד",
+        "dob": "תאריך לידה",
+        "profileUpdateSuccess": "הפרופיל עודכן בהצלחה!",
+        "profileUpdateFail": "עדכון הפרופיל נכשל.",
+        "orderStatusPending": "ממתין",
+        "orderStatusPaid": "שולם",
+        "orderStatusFailed": "נכשל",
 
         // Admin
         "adminDashboard": "לוח ניהול",

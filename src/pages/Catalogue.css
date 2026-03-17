@@ -31,9 +31,18 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 8px;
-    margin: 0;
+    margin-bottom: 1rem;
     color: var(--color-primary);
     text-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 500;
 }
 
 /* Controls / Filter Bar */
@@ -238,6 +247,7 @@
     margin-bottom: var(--spacing-lg);
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

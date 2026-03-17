@@ -108,6 +108,7 @@ const Catalogue = () => {
                 <div className="hero-overlay"></div>
                 <div className="container hero-content">
                     <h1 className="hero-title">{t('catalogueHeroTitle')}</h1>
+                    <p className="hero-subtitle">{t('catalogueHeroDescription')}</p>
                 </div>
             </section>
 

@@ -1,0 +1,91 @@
+.favorites-hero {
+    background: radial-gradient(circle at center, rgba(235, 245, 235, 0.8) 0%, var(--color-bg) 100%);
+    padding: 3rem 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-radius: 0 0 40px 40px;
+}
+
+.favorites-hero h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 800;
+}
+
+.favorites-hero p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+}
+
+/* Empty State */
+.empty-favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    min-height: 50vh;
+}
+
+.empty-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    background: rgba(var(--color-primary-rgb), 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    color: var(--color-primary);
+}
+
+.empty-favorites h2 {
+    font-size: 1.8rem;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+}
+
+.empty-favorites p {
+    color: var(--color-text-muted);
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.explore-btn {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-primary);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.explore-btn:hover {
+    color: white;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(var(--color-primary-rgb), 0.3);
+}
+
+/* Favorites Grid - Inherits from Catalogue but can be tuned here */
+.favorites-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+}
+
+@media (max-width: 768px) {
+    .favorites-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .empty-favorites {
+        padding: 2rem 1rem;
+    }
+}

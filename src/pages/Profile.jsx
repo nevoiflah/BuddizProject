@@ -53,11 +53,11 @@ const Profile = () => {
             // Update local context
             setUser({ ...user, name, username });
             setIsEditing(false);
-            alert("Profile updated successfully!");
+            alert(t('profileUpdateSuccess'));
 
         } catch (error) {
             console.error("Error updating profile:", error);
-            alert("Failed to update profile.");
+            alert(t('profileUpdateFail'));
         }
         setLoading(false);
     };
@@ -112,164 +112,189 @@ const Profile = () => {
     if (!user) return null;
 
     return (
-        <div className="profile-page container animate-fade-in">
-            {/* Header */}
-            <div className="profile-header">
-                <div className="profile-avatar">
-                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                </div>
-                <div className="profile-details">
-                    <h2>{user.name}</h2>
-                    <p>{user.email}</p>
-                    <span className="profile-badge">
-                        {user.role === 'ADMIN' ? t('adminBadge') : t('userBadge')}
-                    </span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
-                    <div className="desktop-lang-switch">
-                        <LanguageSwitcher />
+        <div className="profile-page-v2 animate-fade-in">
+            {/* Immersive Hero Header */}
+            <header className="profile-hero">
+                <div className="hero-overlay"></div>
+                <div className="container hero-inner">
+                    <div className="hero-top">
+                        <div className="hero-avatar-wrapper">
+                            <div className="profile-avatar-v2">
+                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                            </div>
+                        </div>
+                        <div className="hero-info">
+                            <h1 className="hero-name">{user.name}</h1>
+                            <p className="hero-email">{user.email}</p>
+                            <div className="hero-badges">
+                                <span className="profile-badge-v2">
+                                    {user.role === 'ADMIN' ? t('adminBadge') : t('userBadge')}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="hero-actions-v2">
+                            <LanguageSwitcher />
+                            <button onClick={handleLogout} className="logout-btn-v2">
+                                <LogOut size={20} />
+                                <span>{t('logout')}</span>
+                            </button>
+                        </div>
                     </div>
-                    <button onClick={handleLogout} className="btn-danger logout-btn">
-                        {t('logout')} <LogOut size={18} style={{ marginLeft: '8px' }} />
-                    </button>
                 </div>
-            </div>
+            </header>
 
-            <div className="profile-sections">
-                {/* Edit Profile Card */}
-                <div className="profile-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h3>{t('profileTitle')}</h3>
-                        <button
-                            className="btn-icon"
-                            onClick={() => setIsEditing(!isEditing)}
-                            style={{ color: 'var(--color-primary)' }}
-                        >
-                            <Edit2 size={20} />
-                        </button>
-                    </div>
-
-                    {!isEditing ? (
-                        <div className="profile-info-view">
-                            <div className="info-row">
-                                <span className="label text-muted">{t('fullNameLabel')}</span>
-                                <span className="value">{user.name}</span>
-                            </div>
-                            <div className="info-row">
-                                <span className="label text-muted">Username</span>
-                                <span className="value">{user.username || 'N/A'}</span>
-                            </div>
-                            <div className="info-row">
-                                <span className="label text-muted">Role</span>
-                                <span className="value">{user.role}</span>
-                            </div>
-                        </div>
-                    ) : (
-                        <form onSubmit={handleUpdateProfile} className="profile-form">
-                            <div className="form-group">
-                                <label>{t('fullNameLabel')}</label>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Username</label>
-                                <input
-                                    type="text"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                                <button type="submit" className="btn-primary" disabled={loading}>
-                                    <Save size={16} style={{ marginRight: '8px' }} />
-                                    {t('saveChanges')}
-                                </button>
-                                <button type="button" className="btn-secondary" onClick={() => setIsEditing(false)}>
-                                    {t('cancel')}
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                </div>
-
-                {/* Change Password Card */}
-                <div className="profile-card">
-                    <h3>{t('changePassword')}</h3>
-                    <form onSubmit={handleUpdatePassword} className="profile-form">
-                        <div className="form-group">
-                            <label>{t('currentPassword')}</label>
-                            <div className="input-icon-wrapper">
-                                <Lock size={16} className="input-icon" />
-                                <input
-                                    type="password"
-                                    value={oldPassword}
-                                    onChange={(e) => setOldPassword(e.target.value)}
-                                    required
-                                    placeholder={t('passwordPlaceholder')}
-                                />
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label>{t('newPassword')}</label>
-                            <div className="input-icon-wrapper">
-                                <Lock size={16} className="input-icon" />
-                                <input
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    required
-                                    placeholder={t('passwordPlaceholder')}
-                                />
-                            </div>
-                        </div>
-                        {passwordMessage && (
-                            <div className={`message ${passwordMessage.includes('Error') ? 'error' : 'success'}`}>
-                                {passwordMessage}
-                            </div>
-                        )}
-                        <button type="submit" className="btn-primary btn-full" disabled={loading} style={{ marginTop: '1rem' }}>
-                            {t('updatePassword')}
-                        </button>
-                    </form>
-                </div>
-
-                <div className="profile-card">
-                    <h3>{t('orderHistory') || 'Order History'}</h3>
-                    {ordersLoading ? (
-                        <div className="text-muted">Loading...</div>
-                    ) : orders.length === 0 ? (
-                        <div className="empty-state">
-                            <p className="text-muted">{t('noRecentOrders') || 'No recent orders.'}</p>
-                        </div>
-                    ) : (
-                        <div className="orders-list">
-                            {orders.map(order => (
-                                <div key={order.id || order.orderId} className="order-item" style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                        <span style={{ fontWeight: 'bold' }}>#{(order.id || order.orderId).substring(0, 8)}</span>
-                                        <span className={`badge ${order.status === 'Paid' ? 'badge-success' :
-                                                order.status === 'PENDING_APPROVAL' ? 'badge-warning' :
-                                                    'badge-danger'
-                                            }`}>
-                                            {order.status === 'PENDING_APPROVAL' ? 'Pending' : order.status}
-                                        </span>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
-                                        <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                                        <span>₪{order.total}</span>
-                                    </div>
-                                    <div style={{ fontSize: '0.85rem', marginTop: '4px', color: '#888' }}>
-                                        {order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+            <div className="container profile-content-v2">
+                <div className="profile-grid">
+                    {/* Security & Settings */}
+                    <aside className="profile-sidebar">
+                        {/* Change Password Card */}
+                        <div className="glass-card profile-card-v2">
+                            <h3 className="card-title-v2">
+                                <Lock size={18} className="title-icon" />
+                                {t('changePassword')}
+                            </h3>
+                            <form onSubmit={handleUpdatePassword} className="profile-form-v2">
+                                <div className="form-group-v2">
+                                    <label>{t('currentPassword')}</label>
+                                    <div className="input-with-icon">
+                                        <Lock size={16} className="field-icon" />
+                                        <input
+                                            type="password"
+                                            value={oldPassword}
+                                            onChange={(e) => setOldPassword(e.target.value)}
+                                            required
+                                            placeholder={t('passwordPlaceholder')}
+                                        />
                                     </div>
                                 </div>
-                            ))}
+                                <div className="form-group-v2">
+                                    <label>{t('newPassword')}</label>
+                                    <div className="input-with-icon">
+                                        <Lock size={16} className="field-icon" />
+                                        <input
+                                            type="password"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            required
+                                            placeholder={t('passwordPlaceholder')}
+                                        />
+                                    </div>
+                                </div>
+                                {passwordMessage && (
+                                    <div className={`message-v2 ${passwordMessage.includes('Error') ? 'error' : 'success'}`}>
+                                        {passwordMessage}
+                                    </div>
+                                )}
+                                <button type="submit" className="btn-primary-v2 w-full" disabled={loading}>
+                                    {t('updatePassword')}
+                                </button>
+                            </form>
                         </div>
-                    )}
+                    </aside>
+
+                    {/* Main Content Area */}
+                    <main className="profile-main">
+                        {/* Profile Info Card */}
+                        <div className="glass-card profile-card-v2">
+                            <div className="card-header-v2">
+                                <h3 className="card-title-v2">
+                                    <User size={18} className="title-icon" />
+                                    {t('profileTitle')}
+                                </h3>
+                                <button
+                                    className="edit-toggle-btn"
+                                    onClick={() => setIsEditing(!isEditing)}
+                                >
+                                    {isEditing ? t('cancel') : <Edit2 size={18} />}
+                                </button>
+                            </div>
+
+                            {!isEditing ? (
+                                <div className="info-display-v2">
+                                    <div className="display-row">
+                                        <label>{t('fullNameLabel')}</label>
+                                        <span>{user.name}</span>
+                                    </div>
+                                    <div className="display-row">
+                                        <label>{t('username')}</label>
+                                        <span>{user.username || 'N/A'}</span>
+                                    </div>
+                                    <div className="display-row">
+                                        <label>{t('role')}</label>
+                                        <span className="role-tag">{user.role}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleUpdateProfile} className="profile-form-v2">
+                                    <div className="form-group-v2">
+                                        <label>{t('fullNameLabel')}</label>
+                                        <input
+                                            type="text"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group-v2">
+                                        <label>{t('username')}</label>
+                                        <input
+                                            type="text"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn-primary-v2" disabled={loading}>
+                                        <Save size={16} />
+                                        {t('saveChanges')}
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+
+                        {/* Order History Card */}
+                        <div className="glass-card profile-card-v2">
+                            <h3 className="card-title-v2">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Save size={18} className="title-icon" style={{ transform: 'rotate(90deg)' }} />
+                                    {t('orderHistory')}
+                                </div>
+                            </h3>
+                            {ordersLoading ? (
+                                <div className="loading-v2">{t('loading')}</div>
+                            ) : orders.length === 0 ? (
+                                <div className="empty-history-v2">
+                                    <p>{t('noOrders')}</p>
+                                </div>
+                            ) : (
+                                <div className="orders-list-v2">
+                                    {orders.map(order => (
+                                        <div key={order.id || order.orderId} className="order-row-v2">
+                                            <div className="order-meta-v2">
+                                                <span className="order-id">#{(order.id || order.orderId).substring(0, 8)}</span>
+                                                <span className="order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                            <div className="order-details-v2">
+                                                <div className="order-items-summary">
+                                                    {order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                                                </div>
+                                                <div className="order-footer-v2">
+                                                    <span className="order-total">₪{order.total}</span>
+                                                    <span className={`status-pill ${order.status?.toLowerCase().replace('_', '-')}`}>
+                                                        {order.status === 'PENDING_APPROVAL' 
+                                                            ? t('orderStatusPending') 
+                                                            : order.status === 'Paid' 
+                                                                ? t('orderStatusPaid') 
+                                                                : t('orderStatusFailed')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </main>
                 </div>
             </div>
         </div>

@@ -152,6 +152,29 @@ button {
   /* Red-600 */
 }
 
+.btn-icon {
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
+}
+
+.btn-icon.active {
+  color: var(--color-primary);
+  background: rgba(43, 174, 102, 0.1);
+}
+
 /* Animations */
 @keyframes float {
   0% {

@@ -106,7 +106,7 @@ export const AppProvider = ({ children }) => {
             });
         } catch (err) {
             // Silence expected error when user is not logged in
-            if (err.name === 'UserUnAuthenticatedException' || err.message === 'The user is not authenticated') {
+            if (err.name === 'UserUnAuthenticatedException' || err.message === 'The user is not authenticated' || err.message?.includes('authenticated')) {
 
             } else {
                 console.error("Error in checkUser:", err);

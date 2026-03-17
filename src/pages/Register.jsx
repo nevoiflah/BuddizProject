@@ -28,7 +28,7 @@ const Register = () => {
         }
 
         if (age < 18) {
-            setError("You must be 18 years or older to register.");
+            setError(t('alreadyAbove18'));
             return;
         }
 
@@ -122,7 +122,7 @@ const Register = () => {
                         </div>
 
                         <div className="form-group">
-                            <label>Date of Birth</label>
+                            <label>{t('dob')}</label>
                             <input
                                 type="date"
                                 value={birthdate}

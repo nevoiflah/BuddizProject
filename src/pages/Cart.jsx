@@ -28,7 +28,7 @@ const Cart = () => {
 
     const createOrder = async (data, actions) => {
         if (!user) {
-            alert("Please login to complete your purchase!");
+            alert(t('loginToPay'));
             navigate('/login');
             return;
         }
@@ -70,11 +70,11 @@ const Cart = () => {
                 navigate('/order-pending');
             } else {
                 console.error("Order process failed:", result);
-                alert("Order processing failed. Please try again.");
+                alert(t('processingFailed'));
             }
         } catch (err) {
             console.error("Order Error:", err);
-            alert("An error occurred during order processing.");
+            alert(t('orderError'));
         }
         setIsCheckingOut(false);
     };
@@ -143,7 +143,7 @@ const Cart = () => {
                                 disabled={isCheckingOut || !user}
                             />
                         </PayPalScriptProvider>
-                        {!user && <p className="text-muted" style={{ fontSize: '0.8rem', textAlign: 'center', marginTop: '10px' }}>Please login to pay</p>}
+                        {!user && <p className="text-muted" style={{ fontSize: '0.8rem', textAlign: 'center', marginTop: '10px' }}>{t('loginToPaySub')}</p>}
                     </div>
                 </div>
             </div>
