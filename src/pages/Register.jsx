@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { signUp } from 'aws-amplify/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Auth.css';
 
 const Register = () => {
+    useMeta({ title: 'Create Account | Buddiz Beer', description: 'Join Buddiz to start ordering premium craft beers delivered to your door.' });
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

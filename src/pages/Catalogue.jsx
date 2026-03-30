@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import './Catalogue.css';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { getBeers } from '../services/beerService';
 
 import productImg from '../assets/BuddizProduct.png';
-import ipaImg from '../assets/ipa_style.png';
-import lagerImg from '../assets/lager_style.png';
-import stoutImg from '../assets/stout_style.png';
+import ipaImg from '../assets/ipa_style.jpg';
+import lagerImg from '../assets/lager_style.jpg';
+import stoutImg from '../assets/stout_style.jpg';
 import { ShoppingCart, PawPrint, SlidersHorizontal, Beer, Filter } from 'lucide-react';
 
 const Catalogue = () => {
     const { addToCart, toggleFavorite, favorites, t, language, user } = useApp();
+    useMeta({ title: 'Catalogue | Buddiz Beer', description: 'Browse our full range of craft beers. Filter by style, sort by price or ABV.' });
     const [beers, setBeers] = useState([]);
     const [filteredBeers, setFilteredBeers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,19 +31,8 @@ const Catalogue = () => {
 
     const fetchBeers = async () => {
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({
-                region: "eu-north-1",
-                credentials
-            });
-            const docClient = DynamoDBDocumentClient.from(client);
-
-            const command = new ScanCommand({
-                TableName: "BUDDIZ-Beers"
-            });
-
-            const response = await docClient.send(command);
-            setBeers(response.Items || []);
+            const items = await getBeers();
+            setBeers(items);
         } catch (err) {
             console.error("Error fetching beers:", err);
             setBeers([]);

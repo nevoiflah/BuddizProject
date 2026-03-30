@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import logo from '../assets/BuddizLogo.jpeg';
+import { useMeta } from '../hooks/useMeta';
 import imgDream from '../assets/story_milestone_1_dream_1773317636628.png';
 import imgBrew from '../assets/story_milestone_2_brew_1773317658671.png';
 import imgToday from '../assets/story_milestone_3_today_v2_1773318977847.png';
@@ -10,10 +10,10 @@ import './Home.css';
 
 const Home = () => {
     const { user, t } = useApp();
+    useMeta({ title: 'Buddiz Beer | Craft Beer Delivered', description: 'Discover Buddiz – premium craft beers delivered. Shop IPA, Lager, Stout and more.' });
 
     useEffect(() => {
         const handleScroll = () => {
-            const storySection = document.getElementById('story');
             const roadmapContainer = document.querySelector('.roadmap-container');
             
             if (roadmapContainer) {
@@ -57,7 +57,7 @@ const Home = () => {
             <section className="hero-section">
                 <div className="hero-content">
                     <div className="hero-logo-wrapper animate-float">
-                        <img src={logo} alt="Buddiz Beer" className="hero-logo" />
+                        <img src="/logo.jpeg" alt="Buddiz Beer" className="hero-logo" />
                     </div>
                     <h1 className="hero-title">{t('heroTitle')}</h1>
                     <h2 className="hero-subtitle">{t('heroSubtitle')}</h2>

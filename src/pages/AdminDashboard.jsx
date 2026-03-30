@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import { useNavigate } from 'react-router-dom';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, ScanCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { fetchAuthSession } from 'aws-amplify/auth';
-import { Users, Package, ShoppingBag, Activity, Trash2, Shield, ShieldOff } from 'lucide-react';
+import { getAllUsers, getAllProducts, getAllOrders, updateUserRole, deleteUser, approveOrder, denyOrder } from '../services/adminService';
+import { Users, Package, ShoppingBag, Trash2, Shield, ShieldOff } from 'lucide-react';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-    const { user, t } = useApp();
+    const { user, t, showToast } = useApp();
+    useMeta({ title: 'Admin Dashboard | Buddiz Beer', description: 'Manage users, inventory and orders on the Buddiz admin panel.' });
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('users');
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pending, setPending] = useState(null);
+
+    const confirm = (message, onConfirm) => setPending({ message, onConfirm });
 
     useEffect(() => {
         if (!user || user.role !== 'ADMIN') {
@@ -26,142 +29,84 @@ const AdminDashboard = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
+            const [fetchedUsers, fetchedProducts, fetchedOrders] = await Promise.allSettled([
+                getAllUsers(),
+                getAllProducts(),
+                getAllOrders(),
+            ]);
 
-            // Fetch Users
-            const userScan = await docClient.send(new ScanCommand({ TableName: "BUDDIZ-Users" }));
-            setUsers(userScan.Items || []);
-
-            // Fetch Products
-            const productScan = await docClient.send(new ScanCommand({ TableName: "BUDDIZ-Beers" }));
-            setProducts(productScan.Items || []);
-
-            // Fetch Orders
-            try {
-                const orderScan = await docClient.send(new ScanCommand({ TableName: "BUDDIZ-Orders" }));
-                setOrders(orderScan.Items || []);
-            } catch (e) {
-
-            }
-
+            if (fetchedUsers.status === 'fulfilled') setUsers(fetchedUsers.value);
+            if (fetchedProducts.status === 'fulfilled') setProducts(fetchedProducts.value);
+            if (fetchedOrders.status === 'fulfilled') setOrders(fetchedOrders.value);
         } catch (error) {
             console.error("Error fetching admin data:", error);
         }
         setLoading(false);
     };
 
-    const handleDeleteUser = async (userToDelete) => {
-        if (!window.confirm(`Are you sure you want to delete ${userToDelete.name}? This action cannot be undone.`)) return;
-
-        try {
-            // Call the Admin Delete Lambda
-            const response = await fetch('https://nmmrf3d34rrguhcxcbqcxdtd640ouger.lambda-url.eu-north-1.on.aws/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: userToDelete.email,
-                    userId: userToDelete.id
-                })
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'Failed to delete user');
+    const handleDeleteUser = (userToDelete) => {
+        confirm(`Delete ${userToDelete.name}? This cannot be undone.`, async () => {
+            try {
+                await deleteUser(userToDelete.email, userToDelete.id);
+                setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
+                showToast("User deleted successfully.", 'success');
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                showToast(`Failed to delete user: ${error.message}`, 'error');
             }
-
-            setUsers(users.filter(u => u.id !== userToDelete.id));
-            alert("User deleted successfully from System (Auth & Data).");
-        } catch (error) {
-            console.error("Error deleting user:", error);
-            alert(`Failed to delete user: ${error.message}`);
-        }
+        });
     };
 
-    const handleToggleRole = async (userData) => {
+    const handleToggleRole = (userData) => {
         const newRole = userData.role === 'ADMIN' ? 'USER' : 'ADMIN';
-        if (!window.confirm(`Promote ${userData.name} to ${newRole}?`)) return;
-
-        try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
-
-            await docClient.send(new UpdateCommand({
-                TableName: "BUDDIZ-Users",
-                Key: { id: userData.id },
-                UpdateExpression: "set #r = :role",
-                ExpressionAttributeNames: { "#r": "role" },
-                ExpressionAttributeValues: { ":role": newRole }
-            }));
-
-            setUsers(users.map(u => u.id === userData.id ? { ...u, role: newRole } : u));
-        } catch (error) {
-            console.error("Error updating role:", error);
-            alert("Failed to update role.");
-        }
+        confirm(`Change ${userData.name}'s role to ${newRole}?`, async () => {
+            try {
+                await updateUserRole(userData.id, newRole);
+                setUsers(prev => prev.map(u => u.id === userData.id ? { ...u, role: newRole } : u));
+                showToast(`Role updated to ${newRole}.`, 'success');
+            } catch (error) {
+                console.error("Error updating role:", error);
+                showToast("Failed to update role.", 'error');
+            }
+        });
     };
 
-    const handleApproveOrder = async (order) => {
-        if (!window.confirm(`Approve order ${order.id}? Payment will be captured.`)) return;
-        setLoading(true);
-        try {
-            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
-            const response = await fetch(LAMBDA_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: "approveOrder",
-                    orderID: order.id,
-                    userId: order.userId, // Added userId for Composite Key
-                    paypalOrderId: order.paypalOrderId,
-                    authorizationId: order.authorizationId
-                })
-            });
-            const result = await response.json();
-            if (result.status === "success") {
-                alert("Order Approved!");
-                fetchData(); // Refresh data
-            } else {
-                alert("Approval failed: " + JSON.stringify(result));
+    const handleApproveOrder = (order) => {
+        confirm(`Approve order ${order.id?.toString().substring(0, 8)}…? Payment will be captured.`, async () => {
+            setLoading(true);
+            try {
+                const result = await approveOrder(order);
+                if (result.status === "success") {
+                    showToast("Order approved!", 'success');
+                    fetchData();
+                } else {
+                    showToast("Approval failed.", 'error');
+                }
+            } catch (err) {
+                console.error("Approve Error:", err);
+                showToast("Error approving order.", 'error');
             }
-        } catch (err) {
-            console.error("Approve Error:", err);
-            alert("Error approving order.");
-        }
-        setLoading(false);
+            setLoading(false);
+        });
     };
 
-    const handleDenyOrder = async (order) => {
-        if (!window.confirm(`Deny order ${order.id}? Payment will be voided.`)) return;
-        setLoading(true);
-        try {
-            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
-            const response = await fetch(LAMBDA_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: "denyOrder",
-                    orderID: order.id,
-                    userId: order.userId, // Added userId for Composite Key
-                    authorizationId: order.authorizationId
-                })
-            });
-            const result = await response.json();
-            if (result.status === "success") {
-                alert("Order Denied.");
-                fetchData(); // Refresh data
-            } else {
-                alert("Denial failed: " + JSON.stringify(result));
+    const handleDenyOrder = (order) => {
+        confirm(`Deny order ${order.id?.toString().substring(0, 8)}…? Payment will be voided.`, async () => {
+            setLoading(true);
+            try {
+                const result = await denyOrder(order);
+                if (result.status === "success") {
+                    showToast("Order denied.", 'success');
+                    fetchData();
+                } else {
+                    showToast("Denial failed.", 'error');
+                }
+            } catch (err) {
+                console.error("Deny Error:", err);
+                showToast("Error denying order.", 'error');
             }
-        } catch (err) {
-            console.error("Deny Error:", err);
-            alert("Error denying order.");
-        }
-        setLoading(false);
+            setLoading(false);
+        });
     };
 
     const TabButton = ({ id, icon: Icon, label }) => (
@@ -187,6 +132,16 @@ const AdminDashboard = () => {
                     <TabButton id="orders" icon={ShoppingBag} label={t('tabOrders')} />
                 </div>
             </header>
+
+            {pending && (
+                <div className="confirm-bar">
+                    <span>{pending.message}</span>
+                    <div className="confirm-bar-actions">
+                        <button className="btn-confirm" onClick={() => { pending.onConfirm(); setPending(null); }}>Confirm</button>
+                        <button className="btn-cancel" onClick={() => setPending(null)}>Cancel</button>
+                    </div>
+                </div>
+            )}
 
             <div className="admin-content">
                 {loading ? (

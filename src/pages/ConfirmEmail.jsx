@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { confirmSignUp, resendSignUpCode } from 'aws-amplify/auth';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { LAMBDA_URLS } from '../constants/aws';
+import { useMeta } from '../hooks/useMeta';
+import { useApp } from '../context/AppContext';
 import './Auth.css';
 
 const ConfirmEmail = () => {
+    useMeta({ title: 'Verify Email | Buddiz Beer', description: 'Enter your verification code to confirm your Buddiz account.' });
+    const { showToast } = useApp();
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
     const [error, setError] = useState('');
@@ -24,9 +29,8 @@ const ConfirmEmail = () => {
             await confirmSignUp({ username: email, confirmationCode: code });
 
             // Trigger SES Verification
-            const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
             try {
-                await fetch(LAMBDA_URL, {
+                await fetch(LAMBDA_URLS.PAYPAL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "verifyUserIdentity", email: email })
@@ -35,8 +39,7 @@ const ConfirmEmail = () => {
                 console.error("Verification trigger failed", verErr);
             }
 
-            // Success! Redirect to login (or show message)
-            alert("Account confirmed! IMPORTANT: Please check your email and click the AWS verification link to receive order updates.");
+            showToast("Account confirmed! Check your email for a verification link.", 'success');
             navigate('/login');
         } catch (err) {
             setError(err.message);

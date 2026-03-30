@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { signOut, updatePassword, fetchAuthSession } from 'aws-amplify/auth';
+import { signOut, updatePassword } from 'aws-amplify/auth';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import { LogOut, Save, Lock, User, Edit2 } from 'lucide-react';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, UpdateCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { updateUserProfile } from '../services/userService';
+import { getUserOrders } from '../services/orderService';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Profile.css';
 
 const Profile = () => {
-    const { user, setUser, t } = useApp();
+    const { user, setUser, t, showToast } = useApp();
+    useMeta({ title: 'My Profile | Buddiz Beer', description: 'Manage your account, update your details, and view your order history.' });
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -19,7 +21,7 @@ const Profile = () => {
     // Password State
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [passwordMessage, setPasswordMessage] = useState('');
+
 
     const handleLogout = async () => {
         try {
@@ -35,29 +37,13 @@ const Profile = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
-
-            await docClient.send(new UpdateCommand({
-                TableName: "BUDDIZ-Users",
-                Key: { id: user.id },
-                UpdateExpression: "set #n = :name, username = :username",
-                ExpressionAttributeNames: { "#n": "name" },
-                ExpressionAttributeValues: {
-                    ":name": name,
-                    ":username": username
-                }
-            }));
-
-            // Update local context
+            await updateUserProfile({ name, username });
             setUser({ ...user, name, username });
             setIsEditing(false);
-            alert(t('profileUpdateSuccess'));
-
+            showToast(t('profileUpdateSuccess'), 'success');
         } catch (error) {
             console.error("Error updating profile:", error);
-            alert(t('profileUpdateFail'));
+            showToast(t('profileUpdateFail'), 'error');
         }
         setLoading(false);
     };
@@ -73,20 +59,8 @@ const Profile = () => {
 
     const fetchOrders = async () => {
         try {
-            const { credentials } = await fetchAuthSession();
-            const client = new DynamoDBClient({ region: "eu-north-1", credentials });
-            const docClient = DynamoDBDocumentClient.from(client);
-
-            const command = new ScanCommand({
-                TableName: "BUDDIZ-Orders",
-                FilterExpression: "userId = :email",
-                ExpressionAttributeValues: {
-                    ":email": user.email
-                }
-            });
-
-            const response = await docClient.send(command);
-            setOrders((response.Items || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+            const items = await getUserOrders();
+            setOrders(items);
         } catch (err) {
             console.error("Error fetching orders:", err);
         }
@@ -96,15 +70,14 @@ const Profile = () => {
     const handleUpdatePassword = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setPasswordMessage('');
         try {
             await updatePassword({ oldPassword, newPassword });
-            setPasswordMessage(t('passwordChangedSuccess') || 'Password changed successfully!');
+            showToast(t('passwordChangedSuccess') || 'Password changed successfully!', 'success');
             setOldPassword('');
             setNewPassword('');
         } catch (error) {
             console.error(error);
-            setPasswordMessage(`Error: ${error.message}`);
+            showToast(`Error: ${error.message}`, 'error');
         }
         setLoading(false);
     };
@@ -180,11 +153,6 @@ const Profile = () => {
                                         />
                                     </div>
                                 </div>
-                                {passwordMessage && (
-                                    <div className={`message-v2 ${passwordMessage.includes('Error') ? 'error' : 'success'}`}>
-                                        {passwordMessage}
-                                    </div>
-                                )}
                                 <button type="submit" className="btn-primary-v2 w-full" disabled={loading}>
                                     {t('updatePassword')}
                                 </button>

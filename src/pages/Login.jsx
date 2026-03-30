@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { signIn, signOut } from 'aws-amplify/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Auth.css';
 
 const Login = () => {
+    useMeta({ title: 'Sign In | Buddiz Beer', description: 'Sign in to your Buddiz account to order craft beer.' });
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AppProvider } from './context/AppContext';
 import BottomNav from './components/BottomNav';
 import Loader from './components/Loader';
+import ErrorBoundary from './components/ErrorBoundary';
+import Toast from './components/Toast';
 
 // Lazy Load Pages
 const Login = lazy(() => import('./pages/Login'));
@@ -20,7 +22,7 @@ import { useApp } from './context/AppContext';
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const { user } = useApp();
+  const { user, toasts } = useApp();
   const isAuthPage = ['/login', '/register', '/confirm'].includes(location.pathname);
 
   // Always show BottomNav (User request: show nav on login/register too)
@@ -34,6 +36,7 @@ const Layout = ({ children }) => {
         </main>
       </div>
       {showNav && <BottomNav />}
+      <Toast toasts={toasts} />
     </>
   );
 };
@@ -43,7 +46,8 @@ function App() {
     <AppProvider>
       <Router>
         <Layout>
-          <Suspense fallback={<Loader />}>
+          <ErrorBoundary>
+            <Suspense fallback={<Loader />}>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -57,6 +61,7 @@ function App() {
               <Route path="/order-pending" element={<OrderPending />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </Layout>
       </Router>
     </AppProvider>

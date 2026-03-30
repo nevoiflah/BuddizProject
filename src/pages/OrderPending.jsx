@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import waitingDog from '../assets/waiting-dog.png';
+import { useMeta } from '../hooks/useMeta';
+import waitingDog from '../assets/waiting-dog.jpg';
 import './OrderPending.css';
 
 const OrderPending = () => {
     const { t } = useApp();
+    useMeta({ title: 'Order Pending | Buddiz Beer', description: 'Your order is pending approval. We will notify you by email shortly.' });
 
     return (
         <div className="order-pending-container animate-fade-in">

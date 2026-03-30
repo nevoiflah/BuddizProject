@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useMeta } from '../hooks/useMeta';
 import { Link, useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { LAMBDA_URLS } from '../constants/aws';
 import './Cart.css';
 
 const Cart = () => {
     const { cart, removeFromCart, clearCart, user, language, t } = useApp();
+    useMeta({ title: 'Your Cart | Buddiz Beer', description: 'Review your selected beers and complete your order securely with PayPal.' });
     const navigate = useNavigate();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
@@ -24,7 +27,7 @@ const Cart = () => {
         return product[field];
     };
 
-    const LAMBDA_URL = "https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/";
+    const LAMBDA_URL = LAMBDA_URLS.PAYPAL;
 
     const createOrder = async (data, actions) => {
         if (!user) {
