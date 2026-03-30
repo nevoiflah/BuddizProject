@@ -9,6 +9,6 @@ export const TABLES = {
 
 export const LAMBDA_URLS = {
     PAYPAL: 'https://kxyras2cml.execute-api.eu-north-1.amazonaws.com/',
-    ADMIN: 'https://nmmrf3d34rrguhcxcbqcxdtd640ouger.lambda-url.eu-north-1.on.aws/',
-    DATA: 'https://5jkvs6yup25msuud2bqn2dxsn40owzex.lambda-url.eu-north-1.on.aws/',
+    ADMIN: 'https://wh1pr6i698.execute-api.eu-north-1.amazonaws.com/admin',
+    DATA: 'https://wh1pr6i698.execute-api.eu-north-1.amazonaws.com/data',
 };
