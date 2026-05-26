@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
     motion,
@@ -6,23 +6,202 @@ import {
     useTransform,
     useReducedMotion,
 } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useMeta } from '../hooks/useMeta';
-import imgDream from '../assets/story_milestone_1_dream_1773317636628.png';
-import imgBrew from '../assets/story_milestone_2_brew_1773317658671.png';
-import imgToday from '../assets/story_milestone_3_today_v2_1773318977847.png';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Home.css';
 
+// ── Beer Glass SVG ────────────────────────────────────────────────────────────
+const GlassSVG = ({ liquidY, foamOpacity, id }) => (
+    <svg width="90" height="160" viewBox="0 0 90 160" overflow="visible" aria-hidden="true">
+        <defs>
+            <clipPath id={`gc-${id}`}>
+                <polygon points="9,3 81,3 73,152 17,152" />
+            </clipPath>
+            <linearGradient id={`bg-${id}`} x1="0" y1="0" x2="0" y2="160" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stopColor="#FFE066" />
+                <stop offset="45%"  stopColor="#F4A832" />
+                <stop offset="100%" stopColor="#B85C10" />
+            </linearGradient>
+            <linearGradient id={`sheen-${id}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="rgba(255,255,255,0.18)" />
+                <stop offset="40%"  stopColor="rgba(255,255,255,0.06)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+            </linearGradient>
+        </defs>
+
+        {/* Beer fill + foam, clipped to glass shape */}
+        <g clipPath={`url(#gc-${id})`}>
+            <motion.rect x="0" y={liquidY} width="90" height="160" fill={`url(#bg-${id})`} />
+            {/* Foam */}
+            <motion.ellipse
+                cx="45" cy={liquidY} rx="35" ry="10"
+                fill="rgba(255,250,230,0.93)"
+                style={{ opacity: foamOpacity }}
+            />
+            {/* Glass sheen */}
+            <polygon points="9,3 81,3 73,152 17,152" fill={`url(#sheen-${id})`} />
+        </g>
+
+        {/* Glass outline */}
+        <polygon
+            points="9,3 81,3 73,152 17,152"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+        />
+        {/* Rim */}
+        <line x1="9" y1="3" x2="81" y2="3"
+            stroke="var(--color-primary)" strokeWidth="3.5" strokeLinecap="round" />
+
+        {/* Handle */}
+        <path
+            d="M 73 32 Q 108 32 108 78 Q 108 124 73 124"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+        />
+    </svg>
+);
+
+// ── Toast Scroll section ──────────────────────────────────────────────────────
+const ToastScroll = ({ t, reduced }) => {
+    const sectionRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ['start start', 'end end'],
+    });
+
+    // Left glass: slides in from left early, then nudges center for clink
+    const lx = useTransform(scrollYProgress,
+        [0,    0.18,  0.65,  0.90],
+        reduced ? [-90, -90, -90, -90] : [-280, -108, -108, -48]);
+
+    // Right glass: enters later, slides to meet left glass
+    const rx = useTransform(scrollYProgress,
+        [0,    0.42,  0.68,  0.90],
+        reduced ? [90, 90, 90, 90] : [280, 280, 108, 48]);
+
+    // Tilt toward each other at the clink
+    const lRot = useTransform(scrollYProgress, [0.82, 0.91, 0.98], reduced ? [0,0,0] : [0, -10, -4]);
+    const rRot = useTransform(scrollYProgress, [0.82, 0.91, 0.98], reduced ? [0,0,0] : [0,  10,  4]);
+
+    // Both glasses lift slightly for the toast
+    const liftY = useTransform(scrollYProgress, [0.82, 0.91, 1.0], reduced ? [0,0,0] : [0, -20, -14]);
+
+    // Beer fill — y attribute in SVG (152=empty, 14=full)
+    const liquidY    = useTransform(scrollYProgress, [0.25, 0.70], [152, 14]);
+    const foamOpacity = useTransform(scrollYProgress, [0.38, 0.60], [0, 1]);
+
+    // Glow intensifies as glass fills
+    const glassGlow = useTransform(scrollYProgress, [0.25, 0.70],
+        ['drop-shadow(0 0 0px rgba(244,168,50,0))',
+         'drop-shadow(0 0 18px rgba(244,168,50,0.35))']);
+
+    // Clink splash
+    const splashOpacity = useTransform(scrollYProgress, [0.84, 0.89, 0.97], [0, 0.85, 0]);
+    const splashScale   = useTransform(scrollYProgress, [0.84, 0.97], [0.05, 2.6]);
+
+    // CHEERS badge
+    const cheersOpacity = useTransform(scrollYProgress, [0.84, 0.93], [0, 1]);
+    const cheersScale   = useTransform(scrollYProgress, [0.84, 0.97], [0.3, 1]);
+    const cheersY       = useTransform(scrollYProgress, [0.84, 0.97], [32, 0]);
+
+    // Stage labels
+    const s1o = useTransform(scrollYProgress, [0,    0.07,  0.26, 0.36], [0, 1, 1, 0]);
+    const s2o = useTransform(scrollYProgress, [0.30, 0.40,  0.62, 0.72], [0, 1, 1, 0]);
+    const s3o = useTransform(scrollYProgress, [0.66, 0.76,  1.0,  1.0 ], [0, 1, 1, 1]);
+
+    // Scroll hint — fades out immediately on scroll
+    const hintOpacity = useTransform(scrollYProgress, [0, 0.07], [1, 0]);
+
+    return (
+        <div ref={sectionRef} className="toast-scroll-section">
+            <div className="toast-sticky">
+
+                <h3 className="section-title">{t('storyTitle')}</h3>
+
+                {/* Changing stage label */}
+                <div className="toast-label-area">
+                    <motion.div className="toast-label" style={{ opacity: s1o }}>
+                        <span className="toast-step">01</span>
+                        <p>{t('storyDream')}</p>
+                    </motion.div>
+                    <motion.div className="toast-label" style={{ opacity: s2o }}>
+                        <span className="toast-step">02</span>
+                        <p>{t('storyBrew')}</p>
+                    </motion.div>
+                    <motion.div className="toast-label" style={{ opacity: s3o }}>
+                        <span className="toast-step">03</span>
+                        <p>{t('storyToday')}</p>
+                    </motion.div>
+                </div>
+
+                {/* Glasses + clink arena */}
+                <div className="toast-arena">
+                    {/* Golden splash at clink */}
+                    <div className="clink-splash-wrap">
+                        <motion.div
+                            className="clink-splash"
+                            style={{ opacity: splashOpacity, scale: splashScale }}
+                            aria-hidden="true"
+                        />
+                    </div>
+
+                    {/* Left glass */}
+                    <motion.div
+                        className="glass-wrap"
+                        style={{ x: lx, rotate: lRot, y: liftY, filter: glassGlow }}
+                    >
+                        <GlassSVG liquidY={liquidY} foamOpacity={foamOpacity} id="left" />
+                    </motion.div>
+
+                    {/* Right glass */}
+                    <motion.div
+                        className="glass-wrap"
+                        style={{ x: rx, rotate: rRot, y: liftY, filter: glassGlow }}
+                    >
+                        <GlassSVG liquidY={liquidY} foamOpacity={foamOpacity} id="right" />
+                    </motion.div>
+
+                    {/* CHEERS */}
+                    <motion.p
+                        className="cheers-badge"
+                        style={{ opacity: cheersOpacity, scale: cheersScale, y: cheersY }}
+                    >
+                        CHEERS!
+                    </motion.p>
+                </div>
+
+                {/* Scroll hint */}
+                <motion.div
+                    className="scroll-hint"
+                    style={{ opacity: hintOpacity }}
+                    aria-hidden="true"
+                >
+                    <span>{t('scrollToExplore') || 'Scroll to explore our story'}</span>
+                    <ChevronDown size={22} className="hint-chevron" />
+                </motion.div>
+
+            </div>
+        </div>
+    );
+};
+
+// ── Home page ─────────────────────────────────────────────────────────────────
 const Home = () => {
     const { user, t } = useApp();
-    useMeta({ title: 'Buddiz Beer | Craft Beer Delivered', description: 'Discover Buddiz – premium craft beers delivered. Shop IPA, Lager, Stout and more.' });
+    useMeta({
+        title: 'Buddiz Beer | Craft Beer Delivered',
+        description: 'Discover Buddiz – premium craft beers delivered. Shop IPA, Lager, Stout and more.',
+    });
 
     const heroRef = useRef(null);
-    const rafRef = useRef(null);
     const reduced = useReducedMotion();
 
-    // ── Hero parallax ──────────────────────────────────────────────
     const { scrollYProgress: heroProgress } = useScroll({
         target: heroRef,
         offset: ['start start', 'end start'],
@@ -31,49 +210,10 @@ const Home = () => {
     const contentY = useTransform(heroProgress, [0, 1], reduced ? [0, 0] : [0,  -55]);
     const descY    = useTransform(heroProgress, [0, 1], reduced ? [0, 0] : [0,  -25]);
 
-    // ── Roadmap line fill (scroll-linked CSS var) ──────────────────
-    useEffect(() => {
-        const handleScroll = () => {
-            if (rafRef.current) return;
-            rafRef.current = requestAnimationFrame(() => {
-                const container = document.querySelector('.roadmap-container');
-                if (container) {
-                    const rect = container.getBoundingClientRect();
-                    const progress = Math.min(Math.max(-(rect.top - window.innerHeight * 0.5) / rect.height, 0), 1);
-                    document.documentElement.style.setProperty('--roadmap-fill', `${progress * 100}%`);
-                }
-                rafRef.current = null;
-            });
-        };
-
-        // Keep IntersectionObserver only for milestone-point CSS pulse + mobile beer fill
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                entry.target.classList.toggle('in-view', entry.isIntersecting);
-            });
-        }, { threshold: 0.15 });
-
-        document.querySelectorAll('.roadmap-item, .roadmap-cta').forEach(el => observer.observe(el));
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-
-        return () => {
-            document.querySelectorAll('.roadmap-item, .roadmap-cta').forEach(el => observer.unobserve(el));
-            window.removeEventListener('scroll', handleScroll);
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        };
-    }, []);
-
-    // ── Roadmap slide-up variants ──────────────────────────────────
-    const makeSlide = (delay = 0) => ({
-        initial:     { opacity: 0, y: reduced ? 0 : 40 },
-        whileInView: { opacity: 1, y: 0 },
-        transition:  { duration: 0.6, ease: [0.16, 1, 0.3, 1], delay },
-    });
-
     return (
         <div className="home-page animate-fade-in">
-            {/* ── HERO ────────────────────────────────────────────── */}
+
+            {/* ── HERO ──────────────────────────────────────────── */}
             <section ref={heroRef} className="hero-section">
                 <div className="hero-content">
                     <motion.div className="hero-logo-wrapper animate-float" style={{ y: logoY }}>
@@ -106,97 +246,11 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* ── STORY / ROADMAP ─────────────────────────────────── */}
-            <section id="story" className="story-section container">
-                <h3 className="section-title">{t('storyTitle')}</h3>
-
-                <div className="roadmap-container">
-                    <div className="roadmap-line"></div>
-
-                    {/* Item 1 – left */}
-                    <motion.div
-                        className="roadmap-item left"
-                        {...makeSlide(0)}
-                        viewport={{ once: true, amount: 0.3 }}
-                    >
-                        <div className="roadmap-content"><p>{t('storyDream')}</p></div>
-                        <div className="roadmap-point milestone-dream">
-                            <svg viewBox="0 0 24 24" className="milestone-icon" aria-hidden="true">
-                                <path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1z"/>
-                            </svg>
-                        </div>
-                        <div className="roadmap-image-container">
-                            <img src={imgDream} alt="The Dream — founding story" className="roadmap-image" width="400" height="300" />
-                        </div>
-                    </motion.div>
-
-                    {/* Item 2 – right */}
-                    <motion.div
-                        className="roadmap-item right"
-                        {...makeSlide(0.1)}
-                        viewport={{ once: true, amount: 0.3 }}
-                    >
-                        <div className="roadmap-image-container">
-                            <img src={imgBrew} alt="The First Brew — first batch" className="roadmap-image" width="400" height="300" />
-                        </div>
-                        <div className="roadmap-point milestone-brew">
-                            <svg viewBox="0 0 24 24" className="milestone-icon" aria-hidden="true">
-                                <path fill="currentColor" d="M7,2H17L16,5H19V21H5V5H8L7,2M9,4L9.67,6H14.33L15,4H9M7,7V19H17V7H7M10,10H12V17H10V10M13,10H15V15H13V10Z"/>
-                            </svg>
-                        </div>
-                        <div className="roadmap-content"><p>{t('storyBrew')}</p></div>
-                    </motion.div>
-
-                    {/* Item 3 – left */}
-                    <motion.div
-                        className="roadmap-item left"
-                        {...makeSlide(0.15)}
-                        viewport={{ once: true, amount: 0.3 }}
-                    >
-                        <div className="roadmap-content"><p>{t('storyToday')}</p></div>
-                        <div className="roadmap-point milestone-today">
-                            <svg viewBox="0 0 24 24" className="milestone-icon" aria-hidden="true">
-                                <path fill="currentColor" d="M4 2h15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V8H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1m13 2v4h1V4h-1M6 8v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8H6m2 2h2v5H8v-5m4 0h2v3h-2v-3z"/>
-                            </svg>
-                        </div>
-                        <div className="roadmap-image-container">
-                            <img src={imgToday} alt="Buddiz Today — current state" className="roadmap-image" width="400" height="300" />
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Beer glass CTA – wobble on entry */}
-                <motion.div
-                    className="roadmap-cta"
-                    initial={{ opacity: 0, scale: 0.85 }}
-                    whileInView={{
-                        opacity: 1,
-                        scale: 1,
-                        rotate: reduced ? 0 : [0, -7, 5, -3, 2, 0],
-                    }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.55, delay: 0.1, ease: 'easeOut' }}
-                >
-                    <Link to="/catalogue" className="beer-glass-btn" aria-label="Browse our brews">
-                        <div className="glass-inner">
-                            <div className="beer-fill">
-                                <div className="bubbles-container" aria-hidden="true">
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                    <div className="bubble"></div>
-                                </div>
-                            </div>
-                            <span className="btn-text">{t('navBrews')}</span>
-                        </div>
-                    </Link>
-                </motion.div>
+            {/* ── STORY / TOAST SCROLL ──────────────────────────── */}
+            <section id="story">
+                <ToastScroll t={t} reduced={reduced} />
             </section>
+
         </div>
     );
 };

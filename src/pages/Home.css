@@ -62,7 +62,6 @@
 }
 
 .story-section {
-    padding-top: var(--spacing-2xl);
     text-align: center;
 }
 
@@ -82,410 +81,151 @@
     margin: var(--spacing-sm) auto 0;
 }
 
-.roadmap-container {
+/* ── Toast Scroll Section ──────────────────────────────────── */
+.toast-scroll-section {
+    height: 300vh;
+    position: relative;
+}
+
+.toast-sticky {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
-    position: relative;
-    max-width: 900px;
-    margin: var(--spacing-2xl) auto;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    overflow: hidden;
     padding: 0 var(--spacing-md);
 }
 
-.roadmap-line {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 12px;
-    background: rgba(43, 174, 102, 0.05);
-    transform: translateX(-50%);
-    border-radius: var(--radius-full);
-    overflow: hidden;
-    border: 1px solid rgba(43, 174, 102, 0.1);
+@media (min-width: 768px) {
+    .toast-sticky {
+        top: 64px;
+        height: calc(100dvh - 64px);
+    }
 }
 
-.roadmap-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--roadmap-fill, 0%);
-    background: linear-gradient(180deg, 
-        var(--color-primary) 0%, 
-        var(--color-primary-dark) 100%
-    );
-    box-shadow: 0 0 20px rgba(43, 174, 102, 0.4);
-    transition: height 0.1s ease-out;
-}
-
-/* Beer Glass CTA Button */
-.roadmap-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--spacing-2xl);
-    padding-bottom: var(--spacing-2xl);
-    perspective: 1000px;
-}
-
-.beer-glass-btn {
+/* Stage label */
+.toast-label-area {
     position: relative;
-    width: 140px;
-    height: 180px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-}
-
-.glass-inner {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 3px solid var(--color-primary);
-    border-radius: 5px 5px 30px 30px;
-    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.beer-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 10%; /* Low starting baseline */
-    background: linear-gradient(to top, #F28E1C 0%, #FFD700 80%, #FFF9C4 100%);
-    transition: height 3s cubic-bezier(0.19, 1, 0.22, 1);
-    overflow: hidden;
-}
-
-/* CSS Bubbles */
-.bubbles-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-    left: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.beer-glass-btn:hover .bubbles-container {
-    opacity: 0.6;
-}
-
-.bubble {
-    position: absolute;
-    bottom: -10px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    animation: bubble-rise linear infinite;
-}
-
-.bubble:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-duration: 2.5s; animation-delay: 0.2s; }
-.bubble:nth-child(2) { width: 6px; height: 6px; left: 25%; animation-duration: 3s; animation-delay: 0.5s; }
-.bubble:nth-child(3) { width: 3px; height: 3px; left: 40%; animation-duration: 2.2s; animation-delay: 0.1s; }
-.bubble:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-duration: 2.8s; animation-delay: 0.8s; }
-.bubble:nth-child(5) { width: 4px; height: 4px; left: 70%; animation-duration: 2.4s; animation-delay: 0.3s; }
-.bubble:nth-child(6) { width: 6px; height: 6px; left: 85%; animation-duration: 3.2s; animation-delay: 0.6s; }
-.bubble:nth-child(7) { width: 3px; height: 3px; left: 20%; animation-duration: 2.6s; animation-delay: 1.2s; }
-.bubble:nth-child(8) { width: 5px; height: 5px; left: 50%; animation-duration: 2.9s; animation-delay: 0.9s; }
-.bubble:nth-child(9) { width: 4px; height: 4px; left: 75%; animation-duration: 2.7s; animation-delay: 0.4s; }
-
-@keyframes bubble-rise {
-    0% { transform: translateY(0) scale(1); opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { transform: translateY(-160px) scale(0.5); opacity: 0; }
-}
-
-.beer-glass-btn:hover .beer-fill {
-    height: 95%;
-    transition: height 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-    animation: glass-full-glow 1s ease-in-out forwards 1.3s;
-}
-
-@keyframes glass-full-glow {
-    0% { box-shadow: inset 0 0 0 rgba(255, 255, 255, 0); }
-    50% { box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 215, 0, 0.5); }
-    100% { box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 215, 0, 0.3); }
-}
-
-.btn-text {
-    position: relative;
-    z-index: 10;
-    color: var(--color-primary);
-    font-weight: 900;
-    font-size: 1.4rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: color 0.4s ease, transform 0.4s ease;
-    text-shadow:
-        -1px -1px 0 #fff,
-         1px -1px 0 #fff,
-        -1px  1px 0 #fff,
-         1px  1px 0 #fff,
-         0 4px 10px rgba(0,0,0,0.2);
-}
-
-.beer-glass-btn:hover .btn-text {
-    color: #4B3621; /* High contrast dark color on golden beer */
-    transform: scale(1.05);
-}
-
-/* Completion Celebration */
-.beer-glass-btn:hover::before {
-    content: 'TOPPED UP!';
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
-    color: var(--color-primary);
-    font-weight: 900;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    opacity: 0;
-    animation: topped-up-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 1.4s;
-}
-
-@keyframes topped-up-pop {
-    0% { transform: translateX(-50%) scale(0); opacity: 0; }
-    100% { transform: translateX(-50%) scale(1); opacity: 1; }
-}
-
-.beer-glass-btn:hover .glass-inner {
-    transform: scale(1.08);
-    box-shadow: 0 15px 35px rgba(43, 174, 102, 0.35);
-}
-
-/* Glass Handle */
-.beer-glass-btn::after {
-    content: '';
-    position: absolute;
-    right: -25px;
-    top: 40px;
-    width: 40px;
     height: 80px;
-    border: 10px solid var(--color-primary);
-    border-radius: 0 40px 40px 0;
-    z-index: -1;
-    transition: transform 0.3s ease;
-}
-
-.beer-glass-btn:hover::after {
-    transform: scale(1.08) rotate(3deg);
-}
-
-.roadmap-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-2xl);
     width: 100%;
-    /* opacity / transform controlled by Framer Motion */
+    max-width: 540px;
+    text-align: center;
 }
 
-.roadmap-content {
-    width: 42%;
-    font-size: 1.15rem;
-    color: var(--color-text-main);
-    line-height: 1.6;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-md);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(43, 174, 102, 0.1);
-    z-index: 5;
-}
-
-.roadmap-image-container {
-    width: 42%;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.roadmap-image-container:hover {
-    transform: scale(1.03);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-.roadmap-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    aspect-ratio: 4 / 3;
-}
-
-.roadmap-point {
-    width: 48px;
-    height: 48px;
-    background: white;
-    border: 3px solid var(--color-primary);
-    border-radius: 50%;
+.toast-label {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
+    inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: var(--spacing-xs);
+    pointer-events: none;
+}
+
+.toast-step {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 3px;
     color: var(--color-primary);
-    box-shadow: 0 5px 15px rgba(43, 174, 102, 0.2);
-    transition: background-color 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.5s, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s;
+    text-transform: uppercase;
 }
 
-.milestone-icon {
-    width: 24px;
-    height: 24px;
+.toast-label p {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0;
 }
 
-.roadmap-item.in-view .roadmap-point {
-    background: var(--color-primary);
-    color: white;
-    transform: translateX(-50%) scale(1.2);
-    box-shadow: 0 0 30px rgba(43, 174, 102, 0.4);
+/* Glasses arena */
+.toast-arena {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
 }
 
-.roadmap-item.in-view .milestone-dream { animation: pulse-glow-green 2s infinite; }
-.roadmap-item.in-view .milestone-brew { animation: pulse-glow-green 2s infinite 0.3s; }
-.roadmap-item.in-view .milestone-today { animation: pulse-glow-green 2s infinite 0.6s; }
-
-@keyframes pulse-glow-green {
-    0% { box-shadow: 0 0 0 0 rgba(43, 174, 102, 0.6); }
-    70% { box-shadow: 0 0 0 15px rgba(43, 174, 102, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(43, 174, 102, 0); }
+.glass-wrap {
+    position: absolute;
+    bottom: 20px;
 }
 
-/* RTL Support */
-[dir="rtl"] .roadmap-item.left {
-    flex-direction: row-reverse;
+/* Clink splash */
+.clink-splash-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
-[dir="rtl"] .roadmap-item.right {
-    flex-direction: row-reverse;
+.clink-splash {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(255, 215, 0, 0.42) 0%,
+        rgba(43, 174, 102, 0.1) 55%,
+        transparent 75%
+    );
 }
 
-/* Responsive Design */
+/* CHEERS badge — no CSS transform so Framer Motion can own it */
+.cheers-badge {
+    position: absolute;
+    top: -52px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 4px 24px rgba(43, 174, 102, 0.3);
+    pointer-events: none;
+    margin: 0;
+}
+
+/* Scroll hint — no CSS transform so Framer opacity works cleanly */
+.scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.hint-chevron {
+    animation: hint-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes hint-bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(9px); }
+}
+
 @media (max-width: 768px) {
-    .roadmap-container {
-        padding-bottom: var(--spacing-xl);
+    .cheers-badge {
+        font-size: 1.6rem;
+        letter-spacing: 3px;
     }
 
-    .roadmap-line {
-        left: 20px;
-        width: 8px; /* Slightly thinner for mobile */
+    .toast-label p {
+        font-size: 0.9rem;
     }
-
-    /* Ensure liquid fill works on the side line */
-    .roadmap-line::after {
-        left: 0;
-        width: 100%;
-        height: var(--roadmap-fill, 0%);
-    }
-
-    [dir="rtl"] .roadmap-line {
-        left: auto;
-        right: 20px;
-        transform: translateX(50%);
-    }
-
-    .roadmap-item,
-    .roadmap-item.left,
-    .roadmap-item.right,
-    [dir="rtl"] .roadmap-item.left,
-    [dir="rtl"] .roadmap-item.right {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-left: 50px;
-        position: relative;
-        margin-bottom: var(--spacing-xl);
-    }
-
-    [dir="rtl"] .roadmap-item,
-    [dir="rtl"] .roadmap-item.left,
-    [dir="rtl"] .roadmap-item.right {
-        padding-left: 0;
-        padding-right: 50px;
-    }
-
-    .roadmap-point {
-        left: 20px;
-        width: 36px;
-        height: 36px;
-        border-width: 2px;
-    }
-
-    .milestone-icon {
-        width: 18px;
-        height: 18px;
-    }
-
-    [dir="rtl"] .roadmap-point {
-        left: auto;
-        right: 20px;
-        transform: translateX(50%);
-    }
-
-    .roadmap-content,
-    .roadmap-image-container {
-        width: 100%;
-        margin-bottom: var(--spacing-md);
-    }
-
-    .roadmap-content {
-        font-size: 1rem;
-        padding: var(--spacing-md);
-    }
-
-    /* Mobile Beer CTA Adjustments */
-    .beer-glass-btn {
-        width: 110px;
-        height: 140px;
-    }
-
-    .beer-glass-btn::after {
-        right: -20px;
-        top: 30px;
-        width: 30px;
-        height: 60px;
-        border-width: 8px;
-    }
-
-    .btn-text {
-        font-size: 1.1rem;
-    }
-
-    /* Auto-fill on view for mobile since hover is rare */
-    .roadmap-cta.in-view .beer-fill {
-        height: 90%;
-        transition: height 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-        animation: glass-full-glow 1s ease-in-out forwards 1.3s;
-    }
-
-    .roadmap-cta.in-view .bubbles-container {
-        opacity: 0.6;
-    }
-
-    .roadmap-cta.in-view .btn-text {
-        color: #4B3621;
-        transform: scale(1.03);
-    }
-}
-
-.roadmap-cta-btn:hover {
-    color: white !important;
-}
-
-.roadmap-cta-btn span {
-    color: white !important;
 }
