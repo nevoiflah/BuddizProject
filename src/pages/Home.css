@@ -67,7 +67,7 @@
 
 .section-title {
     color: var(--color-primary);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 0;
     position: relative;
     display: inline-block;
 }
@@ -83,7 +83,7 @@
 
 /* ── Toast Scroll Section ──────────────────────────────────── */
 .toast-scroll-section {
-    height: 300vh;
+    height: 350vh;
     position: relative;
 }
 
@@ -95,26 +95,33 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
     overflow: hidden;
-    padding: 0 var(--spacing-md);
-    background: radial-gradient(ellipse at 50% 80%, rgba(43, 174, 102, 0.07) 0%, transparent 65%);
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-2xl);
+    /* Warm amber glow at glass level, green accent below */
+    background:
+        radial-gradient(ellipse at 50% 62%, rgba(244, 168, 50, 0.07) 0%, transparent 48%),
+        radial-gradient(ellipse at 50% 80%, rgba(43, 174, 102, 0.08) 0%, transparent 60%);
 }
 
 @media (min-width: 768px) {
     .toast-sticky {
         top: 64px;
         height: calc(100dvh - 64px);
+        gap: var(--spacing-lg);
     }
 }
 
-/* Stage label */
+/* ── Stage label / CHEERS zone ─────────────────────────────── */
 .toast-label-area {
     position: relative;
-    height: 80px;
+    /* Taller than before — enough room for CHEERS text */
+    min-height: 100px;
     width: 100%;
-    max-width: 540px;
+    max-width: 560px;
     text-align: center;
+    /* Ensure absolute children can extend slightly */
+    overflow: visible;
 }
 
 .toast-label {
@@ -123,6 +130,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-xs);
     pointer-events: none;
 }
@@ -143,22 +151,43 @@
     margin: 0;
 }
 
-/* Glasses arena — must be position:relative so cheers-badge absolute top is relative to it */
+/* CHEERS — sits in the same overlay zone as the stage labels */
+.cheers-badge {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    font-weight: 900;
+    /* Warm gold — celebrates the beer, distinct from green UI */
+    color: #E9A820;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    text-shadow:
+        0 2px 12px rgba(233, 168, 32, 0.55),
+        0 0  40px rgba(244, 168, 50, 0.30);
+    pointer-events: none;
+    margin: 0;
+}
+
+/* ── Glasses arena ─────────────────────────────────────────── */
 .toast-arena {
     position: relative;
     width: 100%;
-    height: 300px;
+    height: 260px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .glass-wrap {
     position: absolute;
-    bottom: 20px;
+    bottom: 12px;
 }
 
-/* Clink splash */
+/* ── Clink splash ──────────────────────────────────────────── */
 .clink-splash-wrap {
     position: absolute;
     top: 50%;
@@ -168,42 +197,27 @@
 }
 
 .clink-splash {
-    width: 220px;
-    height: 220px;
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
     background: radial-gradient(circle,
-        rgba(255, 215, 0, 0.42) 0%,
-        rgba(43, 174, 102, 0.1) 55%,
-        transparent 75%
+        rgba(255, 215, 0, 0.45) 0%,
+        rgba(244, 168, 50, 0.20) 40%,
+        rgba(43, 174, 102, 0.06) 65%,
+        transparent 78%
     );
 }
 
-/* CHEERS badge — no CSS transform so Framer Motion can own it */
-.cheers-badge {
-    position: absolute;
-    top: -68px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 2.8rem;
-    font-weight: 900;
-    color: var(--color-primary);
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    text-shadow: 0 4px 30px rgba(43, 174, 102, 0.4);
-    pointer-events: none;
-    margin: 0;
-}
-
-/* Shop CTA after cheers */
+/* ── Shop CTA ──────────────────────────────────────────────── */
 .toast-cta {
     pointer-events: auto;
+    flex-shrink: 0;
 }
 
-/* Scroll hint — no CSS transform so Framer opacity works cleanly */
+/* ── Scroll hint ───────────────────────────────────────────── */
 .scroll-hint {
     position: absolute;
-    bottom: 36px;
+    bottom: 28px;
     left: 0;
     right: 0;
     display: flex;
@@ -211,7 +225,7 @@
     align-items: center;
     gap: 6px;
     color: var(--color-text-muted);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 500;
     pointer-events: none;
 }
@@ -227,11 +241,15 @@
 
 @media (max-width: 768px) {
     .cheers-badge {
-        font-size: 1.6rem;
-        letter-spacing: 3px;
+        font-size: 1.8rem;
+        letter-spacing: 4px;
     }
 
     .toast-label p {
         font-size: 0.9rem;
+    }
+
+    .toast-arena {
+        height: 220px;
     }
 }

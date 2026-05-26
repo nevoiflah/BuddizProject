@@ -33,6 +33,8 @@ export const translations = {
         "storyDream": "It started with a simple idea: good beer and good dogs. The Dream was born from a passion for craft brewing and the joy of seeing our furry friends run free.",
         "storyBrew": "We spent months perfecting the recipe, combining the finest hops and barley to create a taste as loyal and energetic as our four-legged friends.",
         "storyToday": "Today, Buddiz is more than just a beverage; it's a community. Every bottle celebrates the bond between friends and pets. Let the dog out, crack open a cold one, and enjoy the moment.",
+        "scrollHint": "Scroll to explore our story",
+        "cheersText": "CHEERS!",
 
         // Navigation
         "navHome": "Home",
@@ -169,6 +171,8 @@ export const translations = {
         "storyDream": "זה התחיל מרעיון גאוני פשוט: בירה טובה וכלבים טובים. החלום נולד מתוך תשוקה לבישול בירה ושמחה מלראות את החברים הפרוותיים שלנו רצים חופשי.",
         "storyBrew": "בילינו חודשים בשכלול המתכון, שילוב של הכשות והשעורה הטובים ביותר כדי ליצור טעם נאמן ואנרגטי כמו החברים על ארבע שלנו.",
         "storyToday": "היום, באדיז היא יותר מסתם משקה; היא קהילה. כל בקבוק חוגג את הקשר בין חברים וחיות מחמד. שחרר את הכלב, תפתח בירה קרה ותהנה מהרגע.",
+        "scrollHint": "גלול לגלות את הסיפור שלנו",
+        "cheersText": "לחיים!",
 
         // Navigation
         "navHome": "בית",

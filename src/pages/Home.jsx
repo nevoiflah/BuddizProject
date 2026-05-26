@@ -12,57 +12,119 @@ import { useMeta } from '../hooks/useMeta';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Home.css';
 
-// ── Beer Glass SVG ────────────────────────────────────────────────────────────
+// ── Beer Mug SVG ──────────────────────────────────────────────────────────────
 const GlassSVG = ({ liquidY, foamOpacity, id }) => (
-    <svg width="140" height="240" viewBox="0 0 90 160" overflow="visible" aria-hidden="true">
+    <svg width="150" height="240" viewBox="0 0 130 200" overflow="visible" aria-hidden="true">
         <defs>
+            {/* Inner glass clip — beer lives here */}
             <clipPath id={`gc-${id}`}>
-                <polygon points="9,3 81,3 73,152 17,152" />
+                <polygon points="22,16 98,16 87,170 33,170" />
             </clipPath>
-            <linearGradient id={`bg-${id}`} x1="0" y1="0" x2="0" y2="160" gradientUnits="userSpaceOnUse">
-                <stop offset="0%"   stopColor="#FFE066" />
-                <stop offset="45%"  stopColor="#F4A832" />
-                <stop offset="100%" stopColor="#B85C10" />
+            {/* Rich amber beer gradient */}
+            <linearGradient id={`beer-${id}`} x1="0" y1="0" x2="0" y2="170" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stopColor="#FFE566" />
+                <stop offset="35%"  stopColor="#F09820" />
+                <stop offset="100%" stopColor="#A34510" />
             </linearGradient>
-            <linearGradient id={`sheen-${id}`} x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%"   stopColor="rgba(255,255,255,0.18)" />
-                <stop offset="40%"  stopColor="rgba(255,255,255,0.06)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+            {/* Glass body — subtle translucent tint */}
+            <linearGradient id={`glass-${id}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="rgba(255,255,255,0.28)" />
+                <stop offset="18%"  stopColor="rgba(255,255,255,0.09)" />
+                <stop offset="55%"  stopColor="rgba(200,235,255,0.03)" />
+                <stop offset="82%"  stopColor="rgba(255,255,255,0.07)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.20)" />
+            </linearGradient>
+            {/* Left highlight strip */}
+            <linearGradient id={`hl-${id}`} x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="rgba(255,255,255,0.22)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.00)" />
             </linearGradient>
         </defs>
 
-        {/* Beer fill + foam, clipped to glass shape */}
+        {/* Beer fill + foam, clipped to inner glass */}
         <g clipPath={`url(#gc-${id})`}>
-            <motion.rect x="0" y={liquidY} width="90" height="160" fill={`url(#bg-${id})`} />
-            {/* Foam */}
+            <motion.rect x="0" y={liquidY} width="130" height="200" fill={`url(#beer-${id})`} />
+            {/* Foam — main creamy body */}
             <motion.ellipse
-                cx="45" cy={liquidY} rx="35" ry="10"
-                fill="rgba(255,250,230,0.93)"
+                cx="60" cy={liquidY} rx="37" ry="12"
+                fill="rgba(255,252,240,0.96)"
                 style={{ opacity: foamOpacity }}
             />
-            {/* Glass sheen */}
-            <polygon points="9,3 81,3 73,152 17,152" fill={`url(#sheen-${id})`} />
+            {/* Foam — bright centre highlight */}
+            <motion.ellipse
+                cx="55" cy={liquidY} rx="18" ry="6"
+                fill="rgba(255,255,255,0.60)"
+                style={{ opacity: foamOpacity }}
+            />
+            {/* Foam — right bubble cluster */}
+            <motion.ellipse
+                cx="74" cy={liquidY} rx="10" ry="5"
+                fill="rgba(255,255,255,0.38)"
+                style={{ opacity: foamOpacity }}
+            />
         </g>
 
-        {/* Glass outline */}
+        {/* Glass body tint */}
         <polygon
-            points="9,3 81,3 73,152 17,152"
+            points="12,6 108,6 96,178 24,178"
+            fill={`url(#glass-${id})`}
+        />
+
+        {/* Left-edge highlight strip */}
+        <polygon
+            points="24,16 36,16 29,170 24,170"
+            fill={`url(#hl-${id})`}
+        />
+
+        {/* Outer glass outline */}
+        <polygon
+            points="12,6 108,6 96,178 24,178"
             fill="none"
             stroke="var(--color-primary)"
             strokeWidth="2.5"
             strokeLinejoin="round"
         />
-        {/* Rim */}
-        <line x1="9" y1="3" x2="81" y2="3"
-            stroke="var(--color-primary)" strokeWidth="3.5" strokeLinecap="round" />
 
-        {/* Handle */}
-        <path
-            d="M 73 32 Q 108 32 108 78 Q 108 124 73 124"
-            fill="none"
+        {/* Rim ellipse — 3-D depth */}
+        <ellipse
+            cx="60" cy="6" rx="48" ry="7"
+            fill="rgba(43,174,102,0.08)"
             stroke="var(--color-primary)"
             strokeWidth="2.5"
+        />
+        {/* Inner rim ring */}
+        <ellipse
+            cx="60" cy="6" rx="38" ry="5"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="1.5"
+            opacity="0.35"
+        />
+
+        {/* Handle — outer (solid, brand colour) */}
+        <path
+            d="M 96 54 Q 132 54 132 102 Q 132 150 96 150"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="11"
             strokeLinecap="round"
+        />
+        {/* Handle — inner (glass highlight) */}
+        <path
+            d="M 96 54 Q 132 54 132 102 Q 132 150 96 150"
+            fill="none"
+            stroke="rgba(200,235,255,0.22)"
+            strokeWidth="5"
+            strokeLinecap="round"
+        />
+
+        {/* Base ellipse */}
+        <ellipse
+            cx="60" cy="178" rx="36" ry="5"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="2"
+            opacity="0.65"
         />
     </svg>
 );
@@ -75,52 +137,51 @@ const ToastScroll = ({ t, reduced }) => {
         offset: ['start start', 'end end'],
     });
 
-    // Left glass: slides in from left early, then nudges center for clink
+    // Left glass: slides in early, then nudges to clink position
     const lx = useTransform(scrollYProgress,
-        [0,    0.18,  0.65,  0.78],
+        [0,    0.18,  0.55,  0.68],
         reduced ? [-120, -120, -120, -120] : [-380, -130, -130, -62]);
 
-    // Right glass: enters later, slides to meet left glass
+    // Right glass: enters mid-story, slides to meet left glass
     const rx = useTransform(scrollYProgress,
-        [0,    0.42,  0.68,  0.78],
+        [0,    0.40,  0.58,  0.68],
         reduced ? [120, 120, 120, 120] : [380, 380, 130, 62]);
 
-    // Tilt toward each other at the clink
-    const lRot = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0, -10, -4]);
-    const rRot = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0,  10,  4]);
+    // Tilt tops TOWARD each other at the clink (positive = clockwise)
+    const lRot = useTransform(scrollYProgress, [0.60, 0.68, 0.74], reduced ? [0,0,0] : [0,  14,  6]);
+    const rRot = useTransform(scrollYProgress, [0.60, 0.68, 0.74], reduced ? [0,0,0] : [0, -14, -6]);
 
     // Both glasses lift slightly for the toast
-    const liftY = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0, -20, -14]);
+    const liftY = useTransform(scrollYProgress, [0.60, 0.68, 0.74], reduced ? [0,0,0] : [0, -22, -15]);
 
-    // Beer fill — y attribute in SVG (152=empty, 14=full)
-    const liquidY    = useTransform(scrollYProgress, [0.25, 0.70], [152, 14]);
-    const foamOpacity = useTransform(scrollYProgress, [0.38, 0.60], [0, 1]);
+    // Beer fill — y attribute in SVG (170=empty, 14=full)
+    const liquidY     = useTransform(scrollYProgress, [0.18, 0.60], [170, 14]);
+    const foamOpacity = useTransform(scrollYProgress, [0.30, 0.52], [0, 1]);
 
     // Glow intensifies as glass fills
-    const glassGlow = useTransform(scrollYProgress, [0.25, 0.70],
+    const glassGlow = useTransform(scrollYProgress, [0.18, 0.60],
         ['drop-shadow(0 0 0px rgba(244,168,50,0))',
-         'drop-shadow(0 0 18px rgba(244,168,50,0.35))']);
+         'drop-shadow(0 0 22px rgba(244,168,50,0.42))']);
 
     // Clink splash
-    const splashOpacity = useTransform(scrollYProgress, [0.74, 0.79, 0.87], [0, 0.85, 0]);
-    const splashScale   = useTransform(scrollYProgress, [0.74, 0.87], [0.05, 2.6]);
+    const splashOpacity = useTransform(scrollYProgress, [0.64, 0.68, 0.75], [0, 0.85, 0]);
+    const splashScale   = useTransform(scrollYProgress, [0.64, 0.76], [0.05, 2.6]);
 
-    // CHEERS badge
-    const cheersOpacity = useTransform(scrollYProgress, [0.74, 0.83], [0, 1]);
-    const cheersScale   = useTransform(scrollYProgress, [0.74, 0.87], [0.3, 1]);
-    const cheersY       = useTransform(scrollYProgress, [0.74, 0.87], [32, 0]);
+    // CHEERS text in label zone (replaces stage labels)
+    const cheersOpacity = useTransform(scrollYProgress, [0.70, 0.76], [0, 1]);
+    const cheersY       = useTransform(scrollYProgress, [0.70, 0.76], [14, 0]);
 
     // Shop CTA fades in after CHEERS
-    const ctaOpacity = useTransform(scrollYProgress, [0.82, 0.88], [0, 1]);
-    const ctaY       = useTransform(scrollYProgress, [0.82, 0.88], [16, 0]);
+    const ctaOpacity = useTransform(scrollYProgress, [0.72, 0.78], [0, 1]);
+    const ctaY       = useTransform(scrollYProgress, [0.72, 0.78], [18, 0]);
 
     // Stage labels
-    const s1o = useTransform(scrollYProgress, [0,    0.07,  0.26, 0.36], [0, 1, 1, 0]);
-    const s2o = useTransform(scrollYProgress, [0.30, 0.40,  0.62, 0.72], [0, 1, 1, 0]);
-    const s3o = useTransform(scrollYProgress, [0.66, 0.76,  1.0,  1.0 ], [0, 1, 1, 1]);
+    const s1o = useTransform(scrollYProgress, [0,    0.06,  0.20, 0.28], [0, 1, 1, 0]);
+    const s2o = useTransform(scrollYProgress, [0.22, 0.30,  0.44, 0.50], [0, 1, 1, 0]);
+    const s3o = useTransform(scrollYProgress, [0.48, 0.56,  0.66, 0.72], [0, 1, 1, 0]);
 
-    // Scroll hint — fades out immediately on scroll
-    const hintOpacity = useTransform(scrollYProgress, [0, 0.07], [1, 0]);
+    // Scroll hint — fades out as soon as user starts scrolling
+    const hintOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
 
     return (
         <div ref={sectionRef} className="toast-scroll-section">
@@ -128,7 +189,7 @@ const ToastScroll = ({ t, reduced }) => {
 
                 <h3 className="section-title">{t('storyTitle')}</h3>
 
-                {/* Changing stage label */}
+                {/* Stage labels + CHEERS — same overlay zone */}
                 <div className="toast-label-area">
                     <motion.div className="toast-label" style={{ opacity: s1o }}>
                         <span className="toast-step">01</span>
@@ -142,9 +203,16 @@ const ToastScroll = ({ t, reduced }) => {
                         <span className="toast-step">03</span>
                         <p>{t('storyToday')}</p>
                     </motion.div>
+                    {/* CHEERS — absolute overlay, appears in same space as labels */}
+                    <motion.p
+                        className="cheers-badge"
+                        style={{ opacity: cheersOpacity, y: cheersY }}
+                    >
+                        {t('cheersText')}
+                    </motion.p>
                 </div>
 
-                {/* Glasses + clink arena */}
+                {/* Glasses arena */}
                 <div className="toast-arena">
                     {/* Golden splash at clink */}
                     <div className="clink-splash-wrap">
@@ -170,17 +238,9 @@ const ToastScroll = ({ t, reduced }) => {
                     >
                         <GlassSVG liquidY={liquidY} foamOpacity={foamOpacity} id="right" />
                     </motion.div>
-
-                    {/* CHEERS */}
-                    <motion.p
-                        className="cheers-badge"
-                        style={{ opacity: cheersOpacity, scale: cheersScale, y: cheersY }}
-                    >
-                        CHEERS!
-                    </motion.p>
                 </div>
 
-                {/* Shop CTA after cheers */}
+                {/* Shop CTA — appears after CHEERS */}
                 <motion.div
                     className="toast-cta"
                     style={{ opacity: ctaOpacity, y: ctaY }}
@@ -194,7 +254,7 @@ const ToastScroll = ({ t, reduced }) => {
                     style={{ opacity: hintOpacity }}
                     aria-hidden="true"
                 >
-                    <span>Scroll to explore our story</span>
+                    <span>{t('scrollHint')}</span>
                     <ChevronDown size={22} className="hint-chevron" />
                 </motion.div>
 
