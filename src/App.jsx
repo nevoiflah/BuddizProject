@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import BottomNav from './components/BottomNav';
+import TopNav from './components/TopNav';
 import Loader from './components/Loader';
 import ErrorBoundary from './components/ErrorBoundary';
 import Toast from './components/Toast';
@@ -33,8 +34,9 @@ const Layout = ({ children }) => {
 
   return (
     <>
+      <TopNav />
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
-        <main id="main-content" style={{ flex: 1, paddingBottom: '80px' }}>
+        <main id="main-content" style={{ flex: 1 }}>
           {children}
         </main>
       </div>

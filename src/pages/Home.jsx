@@ -64,11 +64,11 @@ const Home = () => {
         };
     }, []);
 
-    // ── Roadmap flip variants ──────────────────────────────────────
-    const makeFlip = (dir) => ({
-        initial:     reduced ? { opacity: 0 }          : { rotateY: dir * -70, opacity: 0 },
-        whileInView: reduced ? { opacity: 1 }          : { rotateY: 0,         opacity: 1 },
-        transition:  { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
+    // ── Roadmap slide-up variants ──────────────────────────────────
+    const makeSlide = (delay = 0) => ({
+        initial:     { opacity: 0, y: reduced ? 0 : 40 },
+        whileInView: { opacity: 1, y: 0 },
+        transition:  { duration: 0.6, ease: [0.16, 1, 0.3, 1], delay },
     });
 
     return (
@@ -110,15 +110,14 @@ const Home = () => {
             <section id="story" className="story-section container">
                 <h3 className="section-title">{t('storyTitle')}</h3>
 
-                <div className="roadmap-container" style={{ perspective: '1400px' }}>
+                <div className="roadmap-container">
                     <div className="roadmap-line"></div>
 
                     {/* Item 1 – left */}
                     <motion.div
                         className="roadmap-item left"
-                        {...makeFlip(1)}
+                        {...makeSlide(0)}
                         viewport={{ once: true, amount: 0.3 }}
-                        style={{ transformStyle: 'preserve-3d' }}
                     >
                         <div className="roadmap-content"><p>{t('storyDream')}</p></div>
                         <div className="roadmap-point milestone-dream">
@@ -134,10 +133,8 @@ const Home = () => {
                     {/* Item 2 – right */}
                     <motion.div
                         className="roadmap-item right"
-                        {...makeFlip(-1)}
+                        {...makeSlide(0.1)}
                         viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                        style={{ transformStyle: 'preserve-3d' }}
                     >
                         <div className="roadmap-image-container">
                             <img src={imgBrew} alt="The First Brew — first batch" className="roadmap-image" width="400" height="300" />
@@ -153,10 +150,8 @@ const Home = () => {
                     {/* Item 3 – left */}
                     <motion.div
                         className="roadmap-item left"
-                        {...makeFlip(1)}
+                        {...makeSlide(0.15)}
                         viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-                        style={{ transformStyle: 'preserve-3d' }}
                     >
                         <div className="roadmap-content"><p>{t('storyToday')}</p></div>
                         <div className="roadmap-point milestone-today">

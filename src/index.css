@@ -58,6 +58,13 @@ body {
   padding-bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+    padding-top: 64px;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 600;

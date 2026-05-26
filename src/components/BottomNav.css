@@ -1,3 +1,9 @@
+@media (min-width: 768px) {
+    .bottom-nav {
+        display: none;
+    }
+}
+
 .bottom-nav {
     position: fixed;
     bottom: 0;
