@@ -7,7 +7,7 @@ import { LAMBDA_URLS } from '../constants/aws';
 import './Cart.css';
 
 const Cart = () => {
-    const { cart, removeFromCart, clearCart, user, language, t } = useApp();
+    const { cart, removeFromCart, clearCart, user, language, t, showToast } = useApp();
     useMeta({ title: 'Your Cart | Buddiz Beer', description: 'Review your selected beers and complete your order securely with PayPal.' });
     const navigate = useNavigate();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -15,15 +15,11 @@ const Cart = () => {
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     useEffect(() => {
-        if (!user) {
-            navigate('/login');
-        }
+        if (!user) navigate('/login');
     }, [user, navigate]);
 
     const getProductVal = (product, field) => {
-        if (language === 'he') {
-            return product[`${field}_he`] || product[field];
-        }
+        if (language === 'he') return product[`${field}_he`] || product[field];
         return product[field];
     };
 
@@ -31,23 +27,20 @@ const Cart = () => {
 
     const createOrder = async (data, actions) => {
         if (!user) {
-            alert(t('loginToPay'));
+            showToast(t('loginToPay') || 'Please sign in to pay.', 'error');
             navigate('/login');
             return;
         }
         try {
             const response = await fetch(LAMBDA_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: "createOrder",
-                    cart: cart
-                })
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'createOrder', cart })
             });
             const order = await response.json();
             return order.id;
         } catch (err) {
-            console.error("Create Order Error:", err);
+            console.error('Create Order Error:', err);
             throw err;
         }
     };
@@ -56,28 +49,26 @@ const Cart = () => {
         setIsCheckingOut(true);
         try {
             const response = await fetch(LAMBDA_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    action: "createPendingOrder",
+                    action: 'createPendingOrder',
                     orderID: data.orderID,
                     userEmail: user.email || user.username,
-                    cart: cart
+                    cart
                 })
             });
             const result = await response.json();
-
-            if (result.status === "success") {
+            if (result.status === 'success') {
                 clearCart();
-                // alert(t?.orderPending || "Thank you for your order! It is waiting for admin approval. Check your email.");
                 navigate('/order-pending');
             } else {
-                console.error("Order process failed:", result);
-                alert(t('processingFailed'));
+                console.error('Order process failed:', result);
+                showToast(t('processingFailed') || 'Order processing failed. Please try again.', 'error');
             }
         } catch (err) {
-            console.error("Order Error:", err);
-            alert(t('orderError'));
+            console.error('Order Error:', err);
+            showToast(t('orderError') || 'An error occurred. Please try again.', 'error');
         }
         setIsCheckingOut(false);
     };
@@ -109,6 +100,7 @@ const Cart = () => {
                             <button
                                 className="btn-remove"
                                 onClick={() => removeFromCart(item.id)}
+                                aria-label={`Remove ${getProductVal(item, 'name')} from cart`}
                             >
                                 &times;
                             </button>
@@ -133,20 +125,19 @@ const Cart = () => {
                         <PayPalScriptProvider
                             key={language}
                             options={{
-                                "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
-                                currency: "ILS",
-                                intent: "authorize",
+                                'client-id': import.meta.env.VITE_PAYPAL_CLIENT_ID,
+                                currency: 'ILS',
+                                intent: 'authorize',
                                 locale: language === 'he' ? 'he_IL' : 'en_US'
                             }}
                         >
                             <PayPalButtons
                                 createOrder={createOrder}
                                 onApprove={onApprove}
-                                style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay" }}
+                                style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' }}
                                 disabled={isCheckingOut || !user}
                             />
                         </PayPalScriptProvider>
-                        {!user && <p className="text-muted" style={{ fontSize: '0.8rem', textAlign: 'center', marginTop: '10px' }}>{t('loginToPaySub')}</p>}
                     </div>
                 </div>
             </div>

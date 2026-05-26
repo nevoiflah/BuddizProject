@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import BottomNav from './components/BottomNav';
@@ -20,22 +20,26 @@ const OrderPending = lazy(() => import('./pages/OrderPending'));
 
 import { useApp } from './context/AppContext';
 
-const Layout = ({ children }) => {
-  const location = useLocation();
-  const { user, toasts } = useApp();
-  const isAuthPage = ['/login', '/register', '/confirm'].includes(location.pathname);
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+};
 
-  // Always show BottomNav (User request: show nav on login/register too)
-  const showNav = true;
+const Layout = ({ children }) => {
+  const { toasts } = useApp();
 
   return (
     <>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
-        <main style={{ flex: 1, paddingBottom: showNav ? '80px' : '20px' }}>
+        <main id="main-content" style={{ flex: 1, paddingBottom: '80px' }}>
           {children}
         </main>
       </div>
-      {showNav && <BottomNav />}
+      <BottomNav />
       <Toast toasts={toasts} />
     </>
   );
@@ -45,22 +49,23 @@ function App() {
   return (
     <AppProvider>
       <Router>
+        <ScrollToTop />
         <Layout>
           <ErrorBoundary>
             <Suspense fallback={<Loader />}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/catalogue" element={<Catalogue />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/confirm" element={<ConfirmEmail />} />
-              <Route path="/order-pending" element={<OrderPending />} />
-            </Routes>
-          </Suspense>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/catalogue" element={<Catalogue />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/confirm" element={<ConfirmEmail />} />
+                <Route path="/order-pending" element={<OrderPending />} />
+              </Routes>
+            </Suspense>
           </ErrorBoundary>
         </Layout>
       </Router>

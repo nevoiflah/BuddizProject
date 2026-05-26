@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { signOut, updatePassword } from 'aws-amplify/auth';
 import { useApp } from '../context/AppContext';
 import { useMeta } from '../hooks/useMeta';
-import { LogOut, Save, Lock, User, Edit2 } from 'lucide-react';
+import { LogOut, Save, Lock, User, Edit2, Eye, EyeOff, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { updateUserProfile } from '../services/userService';
 import { getUserOrders } from '../services/orderService';
 import LanguageSwitcher from '../components/LanguageSwitcher';
@@ -21,6 +22,8 @@ const Profile = () => {
     // Password State
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
 
     const handleLogout = async () => {
@@ -107,6 +110,12 @@ const Profile = () => {
                         </div>
                         <div className="hero-actions-v2">
                             <LanguageSwitcher />
+                            {user.role === 'ADMIN' && (
+                                <Link to="/admin" className="admin-link-btn">
+                                    <Shield size={18} />
+                                    {t('navAdmin') || 'Admin'}
+                                </Link>
+                            )}
                             <button onClick={handleLogout} className="logout-btn-v2">
                                 <LogOut size={20} />
                                 <span>{t('logout')}</span>
@@ -128,29 +137,49 @@ const Profile = () => {
                             </h3>
                             <form onSubmit={handleUpdatePassword} className="profile-form-v2">
                                 <div className="form-group-v2">
-                                    <label>{t('currentPassword')}</label>
-                                    <div className="input-with-icon">
-                                        <Lock size={16} className="field-icon" />
+                                    <label htmlFor="old-password">{t('currentPassword')}</label>
+                                    <div className="input-with-icon password-wrapper">
+                                        <Lock size={16} className="field-icon" aria-hidden="true" />
                                         <input
-                                            type="password"
+                                            id="old-password"
+                                            type={showOldPassword ? 'text' : 'password'}
                                             value={oldPassword}
                                             onChange={(e) => setOldPassword(e.target.value)}
                                             required
                                             placeholder={t('passwordPlaceholder')}
+                                            autoComplete="current-password"
                                         />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() => setShowOldPassword(v => !v)}
+                                            aria-label={showOldPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showOldPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                     </div>
                                 </div>
                                 <div className="form-group-v2">
-                                    <label>{t('newPassword')}</label>
-                                    <div className="input-with-icon">
-                                        <Lock size={16} className="field-icon" />
+                                    <label htmlFor="new-password">{t('newPassword')}</label>
+                                    <div className="input-with-icon password-wrapper">
+                                        <Lock size={16} className="field-icon" aria-hidden="true" />
                                         <input
-                                            type="password"
+                                            id="new-password"
+                                            type={showNewPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             required
                                             placeholder={t('passwordPlaceholder')}
+                                            autoComplete="new-password"
                                         />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() => setShowNewPassword(v => !v)}
+                                            aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                     </div>
                                 </div>
                                 <button type="submit" className="btn-primary-v2 w-full" disabled={loading}>
