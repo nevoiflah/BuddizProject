@@ -14,7 +14,7 @@ import './Home.css';
 
 // ── Beer Glass SVG ────────────────────────────────────────────────────────────
 const GlassSVG = ({ liquidY, foamOpacity, id }) => (
-    <svg width="90" height="160" viewBox="0 0 90 160" overflow="visible" aria-hidden="true">
+    <svg width="140" height="240" viewBox="0 0 90 160" overflow="visible" aria-hidden="true">
         <defs>
             <clipPath id={`gc-${id}`}>
                 <polygon points="9,3 81,3 73,152 17,152" />
@@ -77,20 +77,20 @@ const ToastScroll = ({ t, reduced }) => {
 
     // Left glass: slides in from left early, then nudges center for clink
     const lx = useTransform(scrollYProgress,
-        [0,    0.18,  0.65,  0.90],
-        reduced ? [-90, -90, -90, -90] : [-280, -108, -108, -48]);
+        [0,    0.18,  0.65,  0.78],
+        reduced ? [-120, -120, -120, -120] : [-380, -130, -130, -62]);
 
     // Right glass: enters later, slides to meet left glass
     const rx = useTransform(scrollYProgress,
-        [0,    0.42,  0.68,  0.90],
-        reduced ? [90, 90, 90, 90] : [280, 280, 108, 48]);
+        [0,    0.42,  0.68,  0.78],
+        reduced ? [120, 120, 120, 120] : [380, 380, 130, 62]);
 
     // Tilt toward each other at the clink
-    const lRot = useTransform(scrollYProgress, [0.82, 0.91, 0.98], reduced ? [0,0,0] : [0, -10, -4]);
-    const rRot = useTransform(scrollYProgress, [0.82, 0.91, 0.98], reduced ? [0,0,0] : [0,  10,  4]);
+    const lRot = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0, -10, -4]);
+    const rRot = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0,  10,  4]);
 
     // Both glasses lift slightly for the toast
-    const liftY = useTransform(scrollYProgress, [0.82, 0.91, 1.0], reduced ? [0,0,0] : [0, -20, -14]);
+    const liftY = useTransform(scrollYProgress, [0.70, 0.78, 0.85], reduced ? [0,0,0] : [0, -20, -14]);
 
     // Beer fill — y attribute in SVG (152=empty, 14=full)
     const liquidY    = useTransform(scrollYProgress, [0.25, 0.70], [152, 14]);
@@ -102,13 +102,17 @@ const ToastScroll = ({ t, reduced }) => {
          'drop-shadow(0 0 18px rgba(244,168,50,0.35))']);
 
     // Clink splash
-    const splashOpacity = useTransform(scrollYProgress, [0.84, 0.89, 0.97], [0, 0.85, 0]);
-    const splashScale   = useTransform(scrollYProgress, [0.84, 0.97], [0.05, 2.6]);
+    const splashOpacity = useTransform(scrollYProgress, [0.74, 0.79, 0.87], [0, 0.85, 0]);
+    const splashScale   = useTransform(scrollYProgress, [0.74, 0.87], [0.05, 2.6]);
 
     // CHEERS badge
-    const cheersOpacity = useTransform(scrollYProgress, [0.84, 0.93], [0, 1]);
-    const cheersScale   = useTransform(scrollYProgress, [0.84, 0.97], [0.3, 1]);
-    const cheersY       = useTransform(scrollYProgress, [0.84, 0.97], [32, 0]);
+    const cheersOpacity = useTransform(scrollYProgress, [0.74, 0.83], [0, 1]);
+    const cheersScale   = useTransform(scrollYProgress, [0.74, 0.87], [0.3, 1]);
+    const cheersY       = useTransform(scrollYProgress, [0.74, 0.87], [32, 0]);
+
+    // Shop CTA fades in after CHEERS
+    const ctaOpacity = useTransform(scrollYProgress, [0.82, 0.88], [0, 1]);
+    const ctaY       = useTransform(scrollYProgress, [0.82, 0.88], [16, 0]);
 
     // Stage labels
     const s1o = useTransform(scrollYProgress, [0,    0.07,  0.26, 0.36], [0, 1, 1, 0]);
@@ -176,13 +180,21 @@ const ToastScroll = ({ t, reduced }) => {
                     </motion.p>
                 </div>
 
+                {/* Shop CTA after cheers */}
+                <motion.div
+                    className="toast-cta"
+                    style={{ opacity: ctaOpacity, y: ctaY }}
+                >
+                    <Link to="/catalogue" className="btn-primary">{t('viewCatalogue')}</Link>
+                </motion.div>
+
                 {/* Scroll hint */}
                 <motion.div
                     className="scroll-hint"
                     style={{ opacity: hintOpacity }}
                     aria-hidden="true"
                 >
-                    <span>{t('scrollToExplore') || 'Scroll to explore our story'}</span>
+                    <span>Scroll to explore our story</span>
                     <ChevronDown size={22} className="hint-chevron" />
                 </motion.div>
 
