@@ -61,6 +61,9 @@
     }
 
     .top-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         padding: 8px 18px;
         border-radius: var(--radius-full);
         font-weight: 600;

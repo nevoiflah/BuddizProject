@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { ShoppingCart, PawPrint, User, LogIn, UserPlus } from 'lucide-react';
+import { ShoppingCart, PawPrint, User, LogIn, UserPlus, Home, Beer } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import './TopNav.css';
@@ -18,17 +18,18 @@ const TopNav = () => {
 
                 <nav className="top-nav-links" aria-label="Main navigation">
                     <NavLink to="/" end className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+                        <Home size={16} aria-hidden="true" />
                         {t('navHome')}
                     </NavLink>
                     <NavLink to="/catalogue" className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+                        <Beer size={16} aria-hidden="true" />
                         {t('navBrews')}
                     </NavLink>
                     {user && (
-                        <>
-                            <NavLink to="/favorites" className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
-                                {t('navFavorites')}
-                            </NavLink>
-                        </>
+                        <NavLink to="/favorites" className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+                            <PawPrint size={16} aria-hidden="true" />
+                            {t('navFavorites')}
+                        </NavLink>
                     )}
                 </nav>
 
