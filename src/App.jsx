@@ -33,7 +33,6 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <a href="#main-content" className="skip-link">Skip to main content</a>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh', backgroundColor: 'var(--color-bg)' }}>
         <main id="main-content" style={{ flex: 1, paddingBottom: '80px' }}>
           {children}
