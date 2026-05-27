@@ -3,6 +3,7 @@
 }
 
 .hero-section {
+    position: relative;
     min-height: 80vh;
     display: flex;
     align-items: center;
@@ -10,6 +11,21 @@
     text-align: center;
     background: radial-gradient(circle at center, rgba(60, 40, 30, 0.4) 0%, var(--color-bg) 70%);
     padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.hero-scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    pointer-events: none;
 }
 
 .hero-content {
@@ -61,15 +77,12 @@
     justify-content: center;
 }
 
-.story-section {
-    text-align: center;
-}
-
 .section-title {
     color: var(--color-primary);
     margin-bottom: 0;
     position: relative;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 .section-title::after {
@@ -83,10 +96,16 @@
 
 /* ── Toast Scroll Section ──────────────────────────────────── */
 .toast-scroll-section {
-    height: 350vh;
+    height: 260vh;
     position: relative;
 }
 
+/*
+ * Flex column layout.
+ * - arena has flex:1 so it grows to fill available vertical space.
+ * - scroll-hint-strip uses margin-top:auto to pin to the very bottom.
+ * This guarantees the hint is NEVER in the same visual zone as the CTA.
+ */
 .toast-sticky {
     position: sticky;
     top: 0;
@@ -94,34 +113,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xl);
     overflow: hidden;
-    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-2xl);
-    /* Warm amber glow at glass level, green accent below */
+    padding: var(--spacing-xl) var(--spacing-md) 0;
     background:
         radial-gradient(ellipse at 50% 62%, rgba(244, 168, 50, 0.07) 0%, transparent 48%),
-        radial-gradient(ellipse at 50% 80%, rgba(43, 174, 102, 0.08) 0%, transparent 60%);
+        radial-gradient(ellipse at 50% 82%, rgba(43, 174, 102, 0.08) 0%, transparent 60%);
 }
 
 @media (min-width: 768px) {
     .toast-sticky {
         top: 64px;
         height: calc(100dvh - 64px);
-        gap: var(--spacing-lg);
+        padding-top: var(--spacing-2xl);
     }
 }
 
-/* ── Stage label / CHEERS zone ─────────────────────────────── */
+/* ── Stage label / CHEERS shared overlay ──────────────────── */
 .toast-label-area {
+    flex-shrink: 0;
     position: relative;
-    /* Taller than before — enough room for CHEERS text */
-    min-height: 100px;
     width: 100%;
     max-width: 560px;
+    min-height: 88px;
     text-align: center;
-    /* Ensure absolute children can extend slightly */
     overflow: visible;
+    margin-top: var(--spacing-lg);
 }
 
 .toast-label {
@@ -151,7 +167,7 @@
     margin: 0;
 }
 
-/* CHEERS — sits in the same overlay zone as the stage labels */
+/* CHEERS — same overlay zone as labels, warm gold colour */
 .cheers-badge {
     position: absolute;
     inset: 0;
@@ -160,31 +176,37 @@
     justify-content: center;
     font-size: 2.6rem;
     font-weight: 900;
-    /* Warm gold — celebrates the beer, distinct from green UI */
     color: #E9A820;
     letter-spacing: 7px;
     text-transform: uppercase;
     text-shadow:
         0 2px 12px rgba(233, 168, 32, 0.55),
-        0 0  40px rgba(244, 168, 50, 0.30);
+        0 0  40px rgba(244, 168, 50, 0.28);
     pointer-events: none;
     margin: 0;
 }
 
-/* ── Glasses arena ─────────────────────────────────────────── */
+/* ── Glasses arena — grows to fill remaining vertical space ── */
 .toast-arena {
+    flex: 1 1 200px;       /* grows, shrinks, min 200px */
+    max-height: 340px;
     position: relative;
     width: 100%;
-    height: 260px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    flex-shrink: 0;
+    margin-top: var(--spacing-xl); /* clear gap between labels and glasses */
+}
+
+.glass-svg {
+    width: 140px;
+    height: 225px;
+    display: block;
 }
 
 .glass-wrap {
     position: absolute;
-    bottom: 12px;
+    bottom: 8px;
 }
 
 /* ── Clink splash ──────────────────────────────────────────── */
@@ -197,37 +219,22 @@
 }
 
 .clink-splash {
-    width: 240px;
-    height: 240px;
+    width: 260px;
+    height: 260px;
     border-radius: 50%;
     background: radial-gradient(circle,
-        rgba(255, 215, 0, 0.45) 0%,
-        rgba(244, 168, 50, 0.20) 40%,
-        rgba(43, 174, 102, 0.06) 65%,
+        rgba(255, 215, 0, 0.44) 0%,
+        rgba(244, 168, 50, 0.20) 38%,
+        rgba(43, 174, 102, 0.06) 62%,
         transparent 78%
     );
 }
 
 /* ── Shop CTA ──────────────────────────────────────────────── */
 .toast-cta {
-    pointer-events: auto;
     flex-shrink: 0;
-}
-
-/* ── Scroll hint ───────────────────────────────────────────── */
-.scroll-hint {
-    position: absolute;
-    bottom: 28px;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-text-muted);
-    font-size: 0.82rem;
-    font-weight: 500;
-    pointer-events: none;
+    pointer-events: auto;
+    margin-top: var(--spacing-md);
 }
 
 .hint-chevron {
@@ -236,20 +243,40 @@
 
 @keyframes hint-bounce {
     0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(9px); }
+    50%       { transform: translateY(8px); }
 }
 
-@media (max-width: 768px) {
+/* ── Mobile tweaks ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .toast-sticky {
+        padding-top: var(--spacing-lg);
+    }
+
+    .toast-label-area {
+        min-height: 76px;
+        margin-top: var(--spacing-md);
+    }
+
+    .toast-arena {
+        margin-top: var(--spacing-md);
+    }
+
+    .toast-label p {
+        font-size: 0.88rem;
+    }
+
     .cheers-badge {
         font-size: 1.8rem;
         letter-spacing: 4px;
     }
 
-    .toast-label p {
-        font-size: 0.9rem;
+    .glass-svg {
+        width: 108px;
+        height: 173px;
     }
 
-    .toast-arena {
-        height: 220px;
+    .clink-splash {
+        width: 180px;
+        height: 180px;
     }
 }
