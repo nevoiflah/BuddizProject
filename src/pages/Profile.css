@@ -8,7 +8,7 @@
 .profile-hero {
     position: relative;
     padding: 100px 0 60px;
-    background: linear-gradient(135deg, #f8fdfb 0%, #e0f2f1 100%);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-tint) 100%);
     margin-bottom: -40px;
     overflow: hidden;
 }
@@ -94,9 +94,9 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: white;
-    color: #ef4444;
-    border: 1px solid #fee2e2;
+    background: var(--color-bg);
+    color: var(--color-error);
+    border: 1px solid var(--color-error-bg);
     padding: 10px 20px;
     border-radius: var(--radius-md);
     font-weight: 600;
@@ -105,7 +105,7 @@
 }
 
 .logout-btn-v2:hover {
-    background: #fef2f2;
+    background: var(--color-error-bg);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
 }
@@ -298,9 +298,9 @@
 .role-tag {
     display: inline-block;
     padding: 4px 12px;
-    background: #f0fdf4;
-    color: #166534;
-    border-radius: 8px;
+    background: var(--color-success-bg);
+    color: var(--color-success-fg);
+    border-radius: var(--radius-sm);
     font-size: 0.9rem !important;
 }
 
@@ -386,18 +386,18 @@
 }
 
 .status-pill.paid {
-    background: #dcfce7;
-    color: #166534;
+    background: var(--color-success-bg);
+    color: var(--color-success-fg);
 }
 
 .status-pill.pending-approval {
-    background: #fef9c3;
-    color: #854d0e;
+    background: var(--color-warning-bg);
+    color: var(--color-warning-fg);
 }
 
 .status-pill.failed {
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--color-error-bg);
+    color: var(--color-error-fg);
 }
 
 .message-v2 {
@@ -408,8 +408,8 @@
     font-size: 0.9rem;
 }
 
-.message-v2.error { background: #fef2f2; color: #dc2626; }
-.message-v2.success { background: #f0fdf4; color: #16a34a; }
+.message-v2.error { background: var(--color-error-bg); color: var(--color-error); }
+.message-v2.success { background: var(--color-success-bg); color: var(--color-success); }
 
 .loading-v2 {
     padding: 40px;

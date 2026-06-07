@@ -1,282 +1,295 @@
+/* ============================================================================
+   HOME — immersive brand experience
+   1) Hero (warm, light)   2) Story journey: a pint pinned beside you that
+   fills as you scroll. Warm light page throughout. Tokens only.
+   ========================================================================== */
+
 .home-page {
-    padding-bottom: var(--spacing-2xl);
+    padding-bottom: 0;
 }
 
+/* ── Hero ──────────────────────────────────────────────────────────────────── */
 .hero-section {
     position: relative;
-    min-height: 80vh;
+    min-height: 88vh;
+    min-height: 88dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: radial-gradient(circle at center, rgba(60, 40, 30, 0.4) 0%, var(--color-bg) 70%);
-    padding: var(--spacing-2xl) var(--spacing-md);
+    padding: var(--space-16) var(--space-4);
+    overflow: hidden;
 }
+
+.hero-glow {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    width: min(680px, 120vw);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+        circle,
+        var(--color-accent-tint) 0%,
+        rgba(231, 246, 238, 0.5) 38%,
+        transparent 68%
+    );
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    max-width: 760px;
+}
+
+.hero-logo-wrapper { margin-bottom: var(--space-6); }
+
+.hero-logo {
+    width: clamp(140px, 38vw, 200px);
+    height: clamp(140px, 38vw, 200px);
+    border-radius: 50%;
+    border: 4px solid var(--color-primary);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    object-fit: cover;
+}
+
+.hero-title {
+    font-size: clamp(2.75rem, 9vw, 5.25rem);
+    line-height: var(--leading-tight);
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: var(--weight-extrabold);
+}
+
+.hero-subtitle {
+    font-size: clamp(1.25rem, 4.5vw, var(--text-xl));
+    color: var(--color-text-muted);
+    font-weight: var(--weight-regular);
+    margin-bottom: var(--space-6);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.hero-description {
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-main);
+    margin: 0 auto var(--space-8);
+    max-width: 52ch;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.hero-cta { font-size: var(--text-md); padding: 14px 36px; }
 
 .hero-scroll-hint {
     position: absolute;
-    bottom: 24px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
     left: 0;
     right: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
-    color: var(--color-text-muted);
-    font-size: 0.82rem;
-    font-weight: 500;
+    gap: var(--space-1);
+    color: var(--color-text-subtle);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
     pointer-events: none;
 }
 
-.hero-content {
-    max-width: 800px;
-}
-
-.hero-logo-wrapper {
-    margin-bottom: var(--spacing-lg);
-}
-
-.hero-logo {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 4px solid var(--color-primary);
-    box-shadow: 0 0 40px rgba(43, 174, 102, 0.3);
-    object-fit: cover;
-}
-
-.hero-title {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-xs);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.hero-subtitle {
-    font-size: 2rem;
-    color: var(--color-text-muted);
-    font-weight: 300;
-    margin-bottom: var(--spacing-lg);
-    font-family: var(--font-main);
-    letter-spacing: 4px;
-}
-
-.hero-description {
-    font-size: 1.2rem;
-    color: var(--color-text-main);
-    margin-bottom: var(--spacing-xl);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.hero-actions {
-    display: flex;
-    gap: var(--spacing-md);
-    justify-content: center;
-}
-
-.section-title {
-    color: var(--color-primary);
-    margin-bottom: 0;
-    position: relative;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.section-title::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: var(--color-primary);
-    margin: var(--spacing-sm) auto 0;
-}
-
-/* ── Toast Scroll Section ──────────────────────────────────── */
-.toast-scroll-section {
-    height: 260vh;
-    position: relative;
-}
-
-/*
- * Flex column layout.
- * - arena has flex:1 so it grows to fill available vertical space.
- * - scroll-hint-strip uses margin-top:auto to pin to the very bottom.
- * This guarantees the hint is NEVER in the same visual zone as the CTA.
- */
-.toast-sticky {
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    padding: var(--spacing-xl) var(--spacing-md) 0;
-    background:
-        radial-gradient(ellipse at 50% 62%, rgba(244, 168, 50, 0.07) 0%, transparent 48%),
-        radial-gradient(ellipse at 50% 82%, rgba(43, 174, 102, 0.08) 0%, transparent 60%);
-}
-
-@media (min-width: 768px) {
-    .toast-sticky {
-        top: 64px;
-        height: calc(100dvh - 64px);
-        padding-top: var(--spacing-2xl);
-    }
-}
-
-/* ── Stage label / CHEERS shared overlay ──────────────────── */
-.toast-label-area {
-    flex-shrink: 0;
-    position: relative;
-    width: 100%;
-    max-width: 560px;
-    min-height: 88px;
-    text-align: center;
-    overflow: visible;
-    margin-top: var(--spacing-lg);
-}
-
-.toast-label {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
-    pointer-events: none;
-}
-
-.toast-step {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: var(--color-primary);
-    text-transform: uppercase;
-}
-
-.toast-label p {
-    font-size: 1.05rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    max-width: 480px;
-    margin: 0;
-}
-
-/* CHEERS — same overlay zone as labels, warm gold colour */
-.cheers-badge {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.6rem;
-    font-weight: 900;
-    color: #E9A820;
-    letter-spacing: 7px;
-    text-transform: uppercase;
-    text-shadow:
-        0 2px 12px rgba(233, 168, 32, 0.55),
-        0 0  40px rgba(244, 168, 50, 0.28);
-    pointer-events: none;
-    margin: 0;
-}
-
-/* ── Glasses arena — grows to fill remaining vertical space ── */
-.toast-arena {
-    flex: 1 1 200px;       /* grows, shrinks, min 200px */
-    max-height: 340px;
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    margin-top: var(--spacing-xl); /* clear gap between labels and glasses */
-}
-
-.glass-svg {
-    width: 140px;
-    height: 225px;
-    display: block;
-}
-
-.glass-wrap {
-    position: absolute;
-    bottom: 8px;
-}
-
-/* ── Clink splash ──────────────────────────────────────────── */
-.clink-splash-wrap {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-}
-
-.clink-splash {
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    background: radial-gradient(circle,
-        rgba(255, 215, 0, 0.44) 0%,
-        rgba(244, 168, 50, 0.20) 38%,
-        rgba(43, 174, 102, 0.06) 62%,
-        transparent 78%
-    );
-}
-
-/* ── Shop CTA ──────────────────────────────────────────────── */
-.toast-cta {
-    flex-shrink: 0;
-    pointer-events: auto;
-    margin-top: var(--spacing-md);
-}
-
-.hint-chevron {
-    animation: hint-bounce 1.8s ease-in-out infinite;
-}
+.hint-chevron { animation: hint-bounce 1.8s ease-in-out infinite; }
 
 @keyframes hint-bounce {
     0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(8px); }
+    50%      { transform: translateY(8px); }
 }
 
-/* ── Mobile tweaks ─────────────────────────────────────────── */
-@media (max-width: 480px) {
-    .toast-sticky {
-        padding-top: var(--spacing-lg);
+/* ── Story journey ─────────────────────────────────────────────────────────── */
+.journey {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    background:
+        radial-gradient(ellipse at 20% 30%, var(--color-accent-tint) 0%, transparent 55%),
+        linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface) 100%);
+}
+
+/* Pinned glass column */
+.journey-visual {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.journey-glow {
+    position: absolute;
+    width: 460px;
+    max-width: 80%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(244, 168, 50, 0.55) 0%,
+        rgba(244, 168, 50, 0.18) 40%,
+        transparent 70%
+    );
+    pointer-events: none;
+}
+
+.journey-glass {
+    position: relative;
+    transform-origin: center bottom;
+}
+
+.glass-svg {
+    width: clamp(190px, 24vw, 290px);
+    height: auto;
+    aspect-ratio: 200 / 350;
+    display: block;
+    filter: drop-shadow(0 18px 24px rgba(122, 52, 8, 0.18));
+}
+
+/* Rising carbonation (clipped to the liquid in the SVG) */
+.beer-bubble {
+    fill: rgba(255, 248, 224, 0.65);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation-name: beer-bubble-rise;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+}
+
+@keyframes beer-bubble-rise {
+    0%   { transform: translateY(6px) scale(0.6); opacity: 0; }
+    18%  { opacity: 0.85; }
+    100% { transform: translateY(-78px) scale(1); opacity: 0; }
+}
+
+/* Scrolling story column */
+.journey-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.journey-block {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Logical padding so spacing flips correctly in RTL (Hebrew) */
+    padding-block: var(--space-16);
+    padding-inline: var(--space-6) var(--space-10);
+    max-width: 60ch;
+}
+
+.journey-eyebrow {
+    color: var(--color-accent-dark);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: var(--space-5);
+}
+
+.journey-step {
+    font-size: clamp(2.5rem, 6vw, var(--text-4xl));
+    font-weight: var(--weight-extrabold);
+    line-height: 1;
+    color: var(--color-primary);
+    opacity: 0.28;
+    margin-bottom: var(--space-3);
+}
+
+.journey-text {
+    margin: 0;
+    font-size: clamp(1.125rem, 2.4vw, var(--text-xl));
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-main);
+}
+
+.journey-finale {
+    align-items: flex-start;
+    gap: var(--space-6);
+}
+
+.journey-cheers {
+    margin: 0;
+    font-size: clamp(3rem, 9vw, 5rem);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: var(--leading-tight);
+    color: var(--color-accent-dark);
+    text-shadow: 0 2px 18px rgba(244, 168, 50, 0.4);
+}
+
+.journey-cta {
+    font-size: var(--text-md);
+    padding: 14px 40px;
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Mobile / tablet: glass pinned at top, story scrolls beneath ───────────── */
+@media (max-width: 768px) {
+    .journey {
+        grid-template-columns: 1fr;
     }
 
-    .toast-label-area {
-        min-height: 76px;
-        margin-top: var(--spacing-md);
-    }
-
-    .toast-arena {
-        margin-top: var(--spacing-md);
-    }
-
-    .toast-label p {
-        font-size: 0.88rem;
-    }
-
-    .cheers-badge {
-        font-size: 1.8rem;
-        letter-spacing: 4px;
+    .journey-visual {
+        top: 0;
+        height: 46vh;
+        height: 46dvh;
+        background:
+            linear-gradient(180deg, transparent 70%, var(--color-surface) 100%);
     }
 
     .glass-svg {
-        width: 108px;
-        height: 173px;
+        width: clamp(150px, 42vw, 220px);
     }
 
-    .clink-splash {
-        width: 180px;
-        height: 180px;
+    .journey-glow { width: 320px; }
+
+    .journey-block {
+        min-height: 72vh;
+        min-height: 72dvh;
+        align-items: center;
+        text-align: center;
+        padding: var(--space-12) var(--space-5);
+        max-width: 100%;
     }
+
+    .journey-finale { align-items: center; }
+}
+
+@media (min-width: 769px) {
+    .journey-visual { top: 64px; height: calc(100dvh - 64px); }
+}
+
+/* ── RTL (Hebrew) — grid/padding flip automatically; just relax Latin-only
+   letter-spacing & uppercase that hurt Hebrew text. ─────────────────────────── */
+[dir="rtl"] .hero-title,
+[dir="rtl"] .hero-subtitle,
+[dir="rtl"] .journey-eyebrow,
+[dir="rtl"] .journey-cheers {
+    letter-spacing: normal;
+}
+
+[dir="rtl"] .hero-subtitle,
+[dir="rtl"] .journey-eyebrow,
+[dir="rtl"] .journey-cheers {
+    text-transform: none;
 }

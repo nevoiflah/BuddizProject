@@ -93,42 +93,42 @@
 }
 
 .badge-admin {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
+    background: var(--color-error-bg);
+    color: var(--color-error-fg);
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
 }
 
 .badge-user {
-    background: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
+    background: var(--color-success-bg);
+    color: var(--color-success-fg);
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
 }
 
 .badge-success {
-    background: rgba(46, 204, 113, 0.2);
-    color: #2ecc71;
+    background: var(--color-success-bg);
+    color: var(--color-success-fg);
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
 }
 
 .badge-warning {
-    background: rgba(241, 196, 15, 0.2);
-    color: #f1c40f;
+    background: var(--color-warning-bg);
+    color: var(--color-warning-fg);
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
 }
 
 .badge-danger {
-    background: rgba(231, 76, 60, 0.2);
-    color: #e74c3c;
+    background: var(--color-error-bg);
+    color: var(--color-error-fg);
     padding: 2px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
 }
 
@@ -141,22 +141,22 @@
 }
 
 .status-dot.success {
-    background-color: #2ecc71;
+    background-color: var(--color-success);
 }
 
 .status-dot.warning {
-    background-color: #f1c40f;
+    background-color: var(--color-warning);
 }
 
 .status-dot.danger {
-    background-color: #e74c3c;
+    background-color: var(--color-error);
 }
 
 .warning-dot {
     display: inline-block;
     width: 6px;
     height: 6px;
-    background-color: #f1c40f;
+    background-color: var(--color-warning);
     border-radius: 50%;
     margin-left: 6px;
     vertical-align: middle;
@@ -185,11 +185,11 @@
     gap: 12px;
     padding: 14px 20px;
     margin-bottom: 16px;
-    background: #fff8e1;
-    border: 1px solid #f59e0b;
+    background: var(--color-warning-bg);
+    border: 1px solid var(--color-warning);
     border-radius: var(--radius-sm);
     font-size: 0.9rem;
-    color: #92400e;
+    color: var(--color-warning-fg);
 }
 
 .confirm-bar-actions {
@@ -200,8 +200,8 @@
 
 .btn-confirm {
     padding: 6px 16px;
-    background: #e74c3c;
-    color: #fff;
+    background: var(--color-error);
+    color: var(--color-on-primary);
     border: none;
     border-radius: var(--radius-full);
     cursor: pointer;
@@ -212,8 +212,8 @@
 .btn-cancel {
     padding: 6px 16px;
     background: transparent;
-    color: #92400e;
-    border: 1px solid #f59e0b;
+    color: var(--color-warning-fg);
+    border: 1px solid var(--color-warning);
     border-radius: var(--radius-full);
     cursor: pointer;
     font-weight: 600;

@@ -3,19 +3,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--background-color);
+    background-color: var(--color-surface);
     padding: 2rem;
 }
 
 .order-card {
-    background: var(--card-background);
-    border-radius: 20px;
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
     padding: 3rem;
     text-align: center;
     max-width: 500px;
     width: 100%;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
 }
 
 .image-wrapper {
@@ -31,8 +31,8 @@
 }
 
 .pending-title {
-    font-size: 2rem;
-    color: var(--text-primary);
+    font-size: var(--text-xl);
+    color: var(--color-text-main);
     margin-bottom: 1rem;
     font-weight: 700;
 }
@@ -40,19 +40,19 @@
 .pending-status {
     display: inline-flex;
     align-items: center;
-    background: #fff3cd;
-    color: #856404;
+    background: var(--color-warning-bg);
+    color: var(--color-warning-fg);
     padding: 0.5rem 1rem;
-    border-radius: 50px;
+    border-radius: var(--radius-full);
     margin-bottom: 1.5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
 }
 
 .status-dot {
     width: 8px;
     height: 8px;
-    background-color: #856404;
+    background-color: var(--color-warning-fg);
     border-radius: 50%;
     margin-right: 8px;
 }
@@ -67,10 +67,10 @@
 }
 
 .pending-message {
-    color: var(--text-secondary);
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin-bottom: 2.5rem;
-    font-size: 1.05rem;
+    font-size: var(--text-md);
 }
 
 .actions {
@@ -83,17 +83,17 @@
     display: inline-block;
     padding: 12px 24px;
     background: transparent;
-    color: var(--text-primary);
+    color: var(--color-text-main);
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
     transition: all 0.2s;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover {
-    background: var(--hover-color);
-    border-color: var(--text-primary);
+    background: var(--color-surface);
+    border-color: var(--color-text-main);
 }
 
 @keyframes pulse {
